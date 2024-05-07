@@ -1,0 +1,95 @@
+.App {
+  text-align: center;
+  background-color: lightgreen;
+  margin: -10px;
+}
+
+.registration {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+input {
+  width: 250px;
+  height: 40px;
+}
+
+.header {
+  background-color: gray;
+  font-size: 25px;
+  margin: -10px;
+}
+
+.header > p {
+  margin: 3px;
+  padding: 5px;
+}
+
+.footer {
+  background-color: gray;
+  font-size: 25px;
+}
+
+.footer > p {
+  margin: 3px;
+  padding: 5px;
+}
+
+.logout {
+  text-align: right;
+  margin-top: -33px;
+  margin-right: 1%;
+}
+
+.addemployee {
+  display: flex;
+  justify-content: space-between;
+  flex-grow: 0;
+  gap: 10px;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-top: 10px;
+}
+
+.addemployee > input {
+  display: flex;
+  flex-grow: 0;
+  max-height: 30px;
+
+}
+
+/*TARVIIKO ENÄÄN?*/
+/* Hide arrows/spinners:
+Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide arrows/spinners:
+Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.addemployee > button {
+  width: 150px;
+  height: 35px;
+  font-weight: bold;
+}
+
+.employeesanddepartments > h4 {
+  text-align: left;
+  margin-left: 10px;
+  margin-bottom: 4px;
+}
+
