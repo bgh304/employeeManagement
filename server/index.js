@@ -161,7 +161,7 @@ app.post('/addemployee', (req, res) => {
       if (err) {
         console.log(err);
       } else {
-        console.log("insert data succeeded");
+        console.log("insert data(employee) succeeded");
       }
     }
   )
@@ -184,7 +184,6 @@ app.post('/deleteemployee', (req, res) => {
 
 app.get('/getemployees', (req, res) => {
   const userId = req.query.userId;
-  console.log("BACKEND userId on: " + userId);
 
   db.execute('SELECT * FROM employees WHERE userId=?', [userId], (err, result) => {
     if (err) {
@@ -216,9 +215,27 @@ app.put('/updateemployee', (req, res) => {
   })
 })
 
+app.post('/adddepartment', (req, res) => {
+  const userId = req.body.userId;
+  const name = req.body.name;
+  const field = req.body.field;
+
+  console.log('BACKEND userId on: ' + userId + ' name on: ' + name + ' field on: ' + field);
+
+
+  db.execute("INSERT INTO departments (userId, name, field) VALUES (?,?,?)",
+    [userId, name, field], (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log('insert data(department) succeeded');
+      }
+    }
+  )
+})
+
 app.get('/getdepartments', (req, res) => {
   const userId = req.query.userId;
-  console.log("BACKEND (getdepartments) userId on: " + userId);
 
   db.execute('SELECT * FROM departments WHERE userId=?', [userId], (err, result) => {
     if (err) {

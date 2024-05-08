@@ -24,8 +24,11 @@ export default function Dashboard() {
   const [jobTitle, setJobtitle] = useState('');
   const [departmentId, setDepartmentId] = useState('');
   const [seniority, setSeniority] = useState('');
-  const [salary, setSalary] = useState(0);
+  const [salary, setSalary] = useState('');
   const [startingDate, setStartingDate] = useState('');
+
+  const [departmentName, setDepartmentName] = useState('');
+  const [departmentField, setDepartmentField] = useState('');
 
   const [data, setData] = useState(''); //muuta allEmployeeksi
   const [employees, setEmployees] = useState({}); //muuta employeessiksi
@@ -62,19 +65,20 @@ export default function Dashboard() {
     Axios.get('http://localhost:3001/getemployees', { params: {userId: userId } }).then((response) => {
       setEmployees(response.data);
     })
-  }, [updateEmployees])
+  }, [updateEmployees, userId]) // tarvitseeko userId? jos tarvitsee, muuta muutkin useEffectit
 
   //Update departments table
   useEffect(() => {
     Axios.get('http://localhost:3001/getdepartments', { params: { userId: userId } }).then((response) => {
+      setDepartments(response.data);
     })
   }, [updateDepartments])
 
-  function addEmployee() {
+  function addEmployeeToDatabase() {
     let jap = [];
-    {Object.entries(departments).map(([key, department]) => (
+    Object.entries(departments).map(([key, department]) => (
       jap.push(department.name.toString())
-    ))}
+    ))
 
     let id = (parseInt(jap.indexOf(departmentId)) + 1);
     console.log("departmentin ID on: " + (parseInt(jap.indexOf(departmentId)) + 1));
@@ -94,7 +98,20 @@ export default function Dashboard() {
     } else {
       setUpdateEmployees(0);
     }
-    //console.log("data: " + data);
+  }
+
+  const addDepartmentToDatabase = () => {
+    console.log('(addDepartmentToDatabase) userId on: ' + userId + ' name on: ' + departmentName + ' field on: ' + departmentField);
+    Axios.post('http://localhost:3001/adddepartment', {
+      userId: userId,
+      name: departmentName,
+      field: departmentField
+    })
+    if (updateDepartments === 0) { // tee funktioksi
+      setUpdateDepartments(1);
+    } else {
+      setUpdateDepartments(0);
+    }
   }
 
   function deleteData(id) {
@@ -130,7 +147,6 @@ export default function Dashboard() {
     ))
     return (
         <Autocomplete
-          // disablePortal mukaan?
           options={jep}
           value={departmentId}
           renderInput={(params) => <TextField {...params} label='Department' />}
@@ -141,7 +157,98 @@ export default function Dashboard() {
     )
   }
 
-  // TODO: työntekijän ja osaston listaus omaksi funktioksi
+  const addEmployee = () => {
+    return (
+      <div className="addemployee">
+        <TextField
+          id='firstname'
+          placeholder='First Name'
+          value={firstName}
+          onChange={e => setFirstName(e.target.value)}
+          size='small'
+        />
+        <TextField
+          id='lastname'
+          placeholder='Last Name'
+          value={lastName}
+          onChange={e => setLastName(e.target.value)}
+          size='small'
+        />
+        <TextField
+          id='jobtitle'
+          placeholder='Job Title'
+          value={jobTitle}
+          onChange={e => setJobtitle(e.target.value)}
+          size='small'
+        />
+
+        {DepartmentsBox(departments)}
+
+        <TextField
+          id='seniority'
+          placeholder='Seniority'
+          value={seniority}
+          onChange={e => setSeniority(e.target.value)}
+          size='small'
+        />
+        <TextField
+          id='salary'
+          placeholder='Salary'
+          value={salary}
+          onChange={e => setSalary(e.target.value)}
+          size='small'
+        />
+
+        <LocalizationProvider dateAdapter={AdapterDayjs} size='small'>
+          <DatePicker // TODO: maxDate
+            id='startingdate'
+            placeholder='Starting Date'
+            value={null} // <- tarvitseeko tätä?
+            onChange={(newStartingDate) => setStartingDate(newStartingDate)}
+            slotProps={{ textField: { size: 'small' }}}
+          />
+        </LocalizationProvider>
+
+        <Button
+          variant='contained'
+          color='success'
+          onClick={() => addEmployeeToDatabase()}
+        >
+          ADD EMPLOYEE
+        </Button>
+      </div>
+    )
+  }
+
+  const addDepartment = () => {
+    return (
+      <div>
+        <TextField
+          id='departmentname'
+          placeholder='Name'
+          value={departmentName}
+          onChange={e => setDepartmentName(e.target.value)}
+          size='small'
+        />
+        <TextField
+          id='departmentfield'
+          placeholder='Field'
+          value={departmentField}
+          onChange={e => setDepartmentField(e.target.value)}
+          size='small'
+        />
+        <Button
+          variant='contained'
+          color='success'
+          onClick={() => addDepartmentToDatabase()}
+        >
+        ADD DEPARTMENT
+        </Button>
+      </div>
+    )
+  }
+
+  // TODO: työntekijöiden ja osastojen lisäys omiksi funktioiksi
   return (
     <div>
       <div className="logout">
@@ -152,58 +259,8 @@ export default function Dashboard() {
           <div>
             <Departments departmentsProps={departments} />
           </div>
-          <div className="addemployee">
-            <TextField
-              id='firstname'
-              placeholder='First Name'
-              value={firstName}
-              onChange={e => setFirstName(e.target.value)}
-              size='small'
-            />
-            <TextField
-              id='lastname'
-              placeholder='Last Name'
-              value={lastName}
-              onChange={e => setLastName(e.target.value)}
-              size='small'
-            />
-            <TextField
-              id='jobtitle'
-              placeholder='Job Title'
-              value={jobTitle}
-              onChange={e => setJobtitle(e.target.value)}
-              size='small'
-            />
-
-            {DepartmentsBox(departments)}
-
-            <TextField
-              id='seniority'
-              placeholder='Seniority'
-              value={seniority}
-              onChange={e => setSeniority(e.target.value)}
-              size='small'
-            />
-            <TextField
-              id='salary'
-              placeholder='Salary'
-              value={salary}
-              onChange={e => setSalary(e.target.value)}
-              size='small'
-            />
-
-            <LocalizationProvider dateAdapter={AdapterDayjs} size='small'>
-              <DatePicker // TODO: maxDate
-                id='startingdate'
-                placeholder='Starting Date'
-                value={null} // <- tarvitseeko tätä?
-                onChange={(newStartingDate) => setStartingDate(newStartingDate)}
-                size='small'
-              />
-            </LocalizationProvider>
-
-            <Button onClick={() => addEmployee()}>ADD EMPLOYEE</Button>
-          </div>
+          {addEmployee()}
+          {addDepartment()}
       </div>
     </div>
   );
@@ -222,46 +279,5 @@ export default function Dashboard() {
               value={startingDate}
               onChange={e => setStartingDate(e.target.value)}
             />
-
-
-<div className="addemployee">
-            <input type='text'
-              placeholder='First Name'
-              value={firstName}
-              onChange={e => setFirstName(e.target.value)}
-            />
-            <input type='text'
-              placeholder="Last Name"
-              value={lastName}
-              onChange={e => setLastName(e.target.value)}
-            />
-            <input type='text'
-              placeholder="Job Title"
-              value={jobTitle}
-              onChange={e => setJobtitle(e.target.value)}
-            />
-            <input type='number' //muuta valikoksi
-              placeholder="Department"
-              value={departmentId}
-              onChange={e => setDepartmentId(e.target.value)}
-            />
-            <input type='text'
-              placeholder="Seniority"
-              value={seniority}
-              onChange={e => setSeniority(e.target.value)}
-            />
-            <input type='number' //poista nuoliviivat
-              placeholder="Salary"
-              value={salary}
-              onChange={e => setSalary(e.target.value)}
-            />
-            <input type='date'
-              placeholder="Starting Date"
-              value={startingDate}
-              onChange={e => setStartingDate(e.target.value)}
-            />
-            <button onClick={() => addEmployee()}>ADD EMPLOYEE</button>
-          </div>
-
 
 */
