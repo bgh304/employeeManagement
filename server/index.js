@@ -171,12 +171,29 @@ app.post('/deleteemployee', (req, res) => {
   const userId = req.body.userid;
   const employeeId = req.body.employeeid;
 
-  db.execute("DELETE FROM employees WHERE userId=? AND employeeId=?", [userid, employeeid],
+  db.execute("DELETE FROM employees WHERE userId=? AND employeeId=?", [userId, employeeId],
     (err, result) => {
       if (err) {
         console.log(err);
       } else {
-        console.log('data deletion succeeded');
+        console.log('employee-data deletion succeeded');
+      }
+    }
+  )
+})
+
+app.post('/deletedepartment', (req, res) => {
+  const userId = req.body.userid;
+  const departmentId = req.body.departmentid;
+
+  db.execute('DELETE FROM departments WHERE userId=? AND departmentId=?', [userId, departmentId],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.send(err);
+      } else {
+        console.log('department-date deletion succeeded');
+        res.send(result);
       }
     }
   )
@@ -197,22 +214,33 @@ app.get('/getemployees', (req, res) => {
 
 app.put('/updateemployee', (req, res) => {
   const userId = req.body.userid;
+  const employeeId = req.body.employeeid;
   const firstName = req.body.firstname;
-  const lastName = req.body.lastname;
+
+  db.execute('UPDATE employees SET firstName=? WHERE userId=? AND employeeId=?', [firstName, userId, employeeId], (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  })
+
+  // OTA VIELÄ LOPUT MUKAAN
+  /*const lastName = req.body.lastname;
   const jobTitle = req.body.jobtitle;
   const departmentId = req.body.departmentid;
   const seniority = req.body.seniority;
   const salary = req.body.salary;
   const startingDate = req.body.startingdate;
 
-  db.execute('UPDATE employee SET userId = ?, firstName = ?, lastName = ?, jobTitle = ?, departmentId = ?, seniority = ?, salary = ?, startingDate = ? WHERE employeeId = ? AND userId = ?',
+  db.execute('UPDATE employees SET userId = ?, firstName = ?, lastName = ?, jobTitle = ?, departmentId = ?, seniority = ?, salary = ?, startingDate = ? WHERE employeeId = ? AND userId = ?',
     [userId, firstName, lastName, jobTitle, departmentId, seniority, salary, startingDate, employeeId, userId], (err, result) => {
       if (err) {
         res.send(err);
       } else {
         res.send(result);
       }
-  })
+  })*/
 })
 
 app.post('/adddepartment', (req, res) => {
@@ -242,7 +270,6 @@ app.get('/getdepartments', (req, res) => {
       res.send(err);
     } else {
       res.send(result);
-      //console.log(result[0].firstName);
     }
   })
 })

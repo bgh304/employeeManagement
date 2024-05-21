@@ -99,9 +99,7 @@ export default function Authenticate() {
 }
 
 /*
-{loginStatus && (
-          <button onClick={userAuthenticeted}>Check if authenticated</button>
-        )}
-*/
 
-// Cookie “userId” does not have a proper “SameSite” attribute value. Soon, cookies without the “SameSite” attribute or with an invalid value will be treated as “Lax”. This means that the cookie will no longer be sent in third-party contexts. If your application depends on this cookie being available in such contexts, please add the “SameSite=None“ attribute to it. To know more about the “SameSite“ attribute, read https://developer.mozilla.org/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+
+
+*/

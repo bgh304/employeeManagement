@@ -1,6 +1,6 @@
 import React from "react"; //usestate/useeffect samaan
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { BrowserRouter, useNavigate } from "react-router-dom";
 import Axios from 'axios';
 import { TextField } from "@mui/material";
 import { Button } from "@mui/material"
@@ -12,7 +12,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/L
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs";
 
-import Departments from "./Departments";
 import Employees from "./Employees";
 
 
@@ -31,8 +30,9 @@ export default function Dashboard() {
   const [departmentField, setDepartmentField] = useState('');
 
   const [data, setData] = useState(''); //muuta allEmployeeksi
-  const [employees, setEmployees] = useState({}); //muuta employeessiksi
+  const [employees, setEmployees] = useState({});
   const [departments, setDepartments] = useState({});
+  const [departmentsEmployeesAmount, setDepartmentsEmployeesAmount] = useState({});
 
   const [updateEmployees, setUpdateEmployees] = useState(0);
   const [updateDepartments, setUpdateDepartments] = useState(0);
@@ -41,40 +41,23 @@ export default function Dashboard() {
 
   const navigate = useNavigate();
 
-  //console.log("Authenticate.js:sä asetettu localstorage (userId) on: " + userId);
-
   if (localStorage.getItem('token') === '') {
     navigate('/');
   } else {
     //console.log('loggaus onnistu');
   }
 
-  //Get employees and departments
-  useEffect(() => {
-      Axios.get('http://localhost:3001/getemployees', { params: { userId: userId} }).then((response) => {
-      setEmployees(response.data);
-    })
-    Axios.get('http://localhost:3001/getdepartments', { params: { userId: userId } }).then((response) => {
-      //console.log('useEffect departments-data on : ' + response.data);
-      setDepartments(response.data);
-    })
-  }, [])
-
-  //Update employees table
-  useEffect(() => {
-    Axios.get('http://localhost:3001/getemployees', { params: {userId: userId } }).then((response) => {
-      setEmployees(response.data);
-    })
-  }, [updateEmployees, userId]) // tarvitseeko userId? jos tarvitsee, muuta muutkin useEffectit
-
-  //Update departments table
+  // Update departments table
   useEffect(() => {
     Axios.get('http://localhost:3001/getdepartments', { params: { userId: userId } }).then((response) => {
       setDepartments(response.data);
     })
-  }, [updateDepartments])
+  }, [updateDepartments, userId]) // tarvitseeko userId? jos tarvitsee, muuta muutkin useEffectit
+
+  // Get departments' employees amount
 
   function addEmployeeToDatabase() {
+    // VIIMEISTELE
     let jap = [];
     Object.entries(departments).map(([key, department]) => (
       jap.push(department.name.toString())
@@ -100,39 +83,6 @@ export default function Dashboard() {
     }
   }
 
-  const addDepartmentToDatabase = () => {
-    console.log('(addDepartmentToDatabase) userId on: ' + userId + ' name on: ' + departmentName + ' field on: ' + departmentField);
-    Axios.post('http://localhost:3001/adddepartment', {
-      userId: userId,
-      name: departmentName,
-      field: departmentField
-    })
-    if (updateDepartments === 0) { // tee funktioksi
-      setUpdateDepartments(1);
-    } else {
-      setUpdateDepartments(0);
-    }
-  }
-
-  function deleteData(id) {
-    Axios.post('http://localhost:3001/deletedata', {
-      user: userId,
-      id: id
-    })
-    if (updateEmployees === 0) { // tee funktioksi
-      setUpdateEmployees(1);
-    } else {
-      setUpdateEmployees(0);
-    }
-  }
-
-  const updateData = (id) => {
-    Axios.put('http://localhost:3001/updatedata', {
-      data: data,
-      id: id
-    })
-  }
-
   const logout = () => {
     localStorage.setItem('token', '');
     //console.log('Dashboardissa asetettu localStorage on: ' + localStorage.getItem('token'));
@@ -150,7 +100,7 @@ export default function Dashboard() {
           options={jep}
           value={departmentId}
           renderInput={(params) => <TextField {...params} label='Department' />}
-          onChange={(event, newValue) => {setDepartmentId(newValue);}}
+          onChange={(event, newValue) => {setDepartmentId(newValue);}} // tarvitseeko 'eventtiä'?
           size='small'
           style={{minWidth: 150}}
         />
@@ -220,48 +170,18 @@ export default function Dashboard() {
     )
   }
 
-  const addDepartment = () => {
-    return (
-      <div>
-        <TextField
-          id='departmentname'
-          placeholder='Name'
-          value={departmentName}
-          onChange={e => setDepartmentName(e.target.value)}
-          size='small'
-        />
-        <TextField
-          id='departmentfield'
-          placeholder='Field'
-          value={departmentField}
-          onChange={e => setDepartmentField(e.target.value)}
-          size='small'
-        />
-        <Button
-          variant='contained'
-          color='success'
-          onClick={() => addDepartmentToDatabase()}
-        >
-        ADD DEPARTMENT
-        </Button>
-      </div>
-    )
-  }
-
   // TODO: työntekijöiden ja osastojen lisäys omiksi funktioiksi
   return (
     <div>
       <div className="logout">
         <button onClick={() => logout()}>LOGOUT</button><br />
-        <div>
-          <Employees employeesProps={employees} userIdProps={userId} />
-          </div>
-          <div>
-            <Departments departmentsProps={departments} />
-          </div>
-          {addEmployee()}
-          {addDepartment()}
       </div>
+      <div>
+        <Employees userIdProps={userId} updateEmployeesProps={updateEmployees} />
+      </div>
+      <div>
+      </div>
+      {addEmployee()}
     </div>
   );
 }
@@ -269,15 +189,6 @@ export default function Dashboard() {
 /*
 
 
-<button onClick={console.log('FIRSTNAME ON: ' + firstName)}>consolelogia</button>
 
-
-
-<TextField
-              id='startingdate'
-              placeholder='Starting Date'
-              value={startingDate}
-              onChange={e => setStartingDate(e.target.value)}
-            />
 
 */
