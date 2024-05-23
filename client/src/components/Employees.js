@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import Axios from 'axios';
 import { TextField } from '@mui/material';
 import { Button } from "@mui/material";
-import './../App.css';
+import Autocomplete from '@mui/material/Autocomplete';
+
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from "dayjs";
+import moment from 'moment';
 
 //kokeile importtaa kaikki kerrallaan
 import Table from '@mui/material/Table';
@@ -13,12 +19,20 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+import './../App.css';
+
 export default function Employees({ userIdProps, updateEmployeesProps }) {
   const [departments, setDepartments] = useState({});
   const [departmentsNames, setDepartmentsNames] = useState({});
   const [employees, setEmployees] = useState({});
 
   const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [jobTitle, setJobtitle] = useState('');
+  const [departmentId, setDepartmentId] = useState('');
+  const [seniority, setSeniority] = useState('');
+  const [salary, setSalary] = useState(0);
+  const [startingDate, setStartingDate] = useState('');
 
   const [updateEmployeesDelete, setUpdateEmployeesDelete] = useState(0);
   const [updateOnOff, setUpdateOnOff] = useState(false);
@@ -56,12 +70,55 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
     }
   }
 
-  const UpdateEmployee = (id) => {
+  const UpdateEmployeeToDatabase = (id, employee) => {
+    console.log('UpdateEmployeeToDatabase: ' + lastName);
+    // VIIMEISTELE, muuta muuttujanimiä
+    let jap = [];
+    Object.entries(departments).map(([key, department]) => (
+      jap.push(department.name.toString())
+    ))
+    //console.log('firstName on: ' + firstName);
+    // JOS LAITAN KENTTÄÄN TEKSTIÄ, NIIN muuttujat firstName, lastName jne. muuttuvat
+    // TODO: kokeile laittaa muuttujat yhteen riviin
+    let firstname;
+    let lastname;
+    let jobtitle;
+    let depId = (parseInt(jap.indexOf(departmentId)) + 1);
+    console.log('depId on: ' + depId);
+    let employeeseniority;
+    let employeesalary;
+    let startingdate;
+
+    // EMPLOYEE.LASTNAME JNE. ON VANHAA DATAA
+
+    // TODO: selvitä voiko else-haaran tehdä tyhjäksi
+    firstName === '' ? firstname = employee.firstName : firstname = firstName;
+    lastName === '' ? lastname = employee.lastName : lastname = lastName;
+    jobTitle === '' ? jobtitle = employee.jobTitle : jobtitle = jobTitle;
+    depId === 0 ? depId = employee.departmentId : depId = depId;
+    seniority === '' ? employeeseniority = employee.seniority : employeeseniority = seniority;
+    salary === 0 ? employeesalary = employee.salary : employeesalary = salary;
+    startingDate === '' ? startingdate = employee.startingDate : startingdate = startingDate;
+
     Axios.put('http://localhost:3001/updateemployee', {
       userid: userIdProps,
       employeeid: id,
-      firstname: firstName
+      firstname: firstname,
+      lastname: lastname,
+      jobtitle: jobtitle,
+      departmentid: depId,
+      seniority: employeeseniority,
+      salary: employeesalary,
+      startingdate: dayjs(startingdate).format('YYYY/MM/DD')
     })
+    setFirstName('');
+    setLastName('');
+    setJobtitle('');
+    setDepartmentId(0);
+    setSeniority('');
+    setSalary(0);
+    setStartingDate('');
+
     setUpdateOnOff(false);
     if (updateEmployeesDelete === 0) { // tee funktioksi (boolean?)
       setUpdateEmployeesDelete(1);
@@ -108,6 +165,25 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
     }
   }
 
+  function DepartmentsBox(departmentsProps, id) {
+    // VIIMEISTELE
+    const jep = [];
+    Object.entries(departmentsProps).map(([key, department]) => (
+      jep.push(department.name.toString())
+    ))
+    return (
+        <Autocomplete
+          options={jep}
+          //value={departmentId}
+          defaultValue={id}
+          renderInput={(params) => <TextField {...params} label='Department' />}
+          onChange={(event, newValue) => {setDepartmentId(newValue);}} // tarvitseeko 'eventtiä'?
+          size='small'
+          style={{minWidth: 150}}
+        />
+    )
+  }
+
   return (
     <div className="employeesanddepartments">
       <h4>Employees</h4>
@@ -140,9 +216,69 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
                     key={key}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
-                    <TableCell>jep</TableCell>
                     <TableCell>
-                      <Button onClick={() => updateEmployeeOnOff(employee.employeeId)}>UPDATE</Button>
+                      <TextField
+                        id='firstname'
+                        placeholder='First Name'
+                        defaultValue={employee.firstName}
+                        onChange={e => setFirstName(e.target.value)}
+                        size='small'
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        id='lastname'
+                        placeholder='Last Name'
+                        defaultValue={employee.lastName}
+                        onChange={e => setLastName(e.target.value)}
+                        size='small'
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        id='jobtitle'
+                        placeholder='Job Title'
+                        defaultValue={employee.jobTitle}
+                        onChange={e => setJobtitle(e.target.value)}
+                        size='small'
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {DepartmentsBox(departments, employee.departmentId)}
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        id='seniority'
+                        placeholder='Seniority'
+                        defaultValue={employee.seniority}
+                        onChange={e => setSeniority(e.target.value)}
+                        size='small'
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        id='salary'
+                        placeholder='Salary'
+                        defaultValue={employee.salary}
+                        onChange={e => setSalary(e.target.value)}
+                        size='small'
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <LocalizationProvider dateAdapter={AdapterDayjs} size='small'>
+                        <DatePicker // TODO: maxDate
+                          id='startingdate'
+                          placeholder='Starting Date'
+                          value={null} // <- tarvitseeko tätä?
+                          onChange={(newStartingDate) => setStartingDate(newStartingDate)}
+                          slotProps={{ textField: { size: 'small' }}}
+                        />
+                      </LocalizationProvider>
+                    </TableCell>
+                    <TableCell>
+                      <Button onClick={() =>
+                        UpdateEmployeeToDatabase(employee.employeeId, employees[key]
+                        )}>UPDATE</Button>
                     </TableCell>
                     </TableRow>
                   :
@@ -155,13 +291,13 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
                   <TableCell>{employee.jobTitle}</TableCell>
                   <TableCell>{kokeilu(employee.departmentId)}</TableCell>
                   <TableCell>{employee.seniority}</TableCell>
-                  <TableCell>{employee.salary}</TableCell>
-                  <TableCell>{employee.startingDate.substring(0, 10)}</TableCell>
+                  <TableCell>{Math.trunc(employee.salary)}</TableCell>
+                  <TableCell>{moment(employee.startingDate).format('MM-DD-YYYY')}</TableCell>
                   <TableCell>
                     <Button onClick={() => deleteEmployee(employee.employeeId)}>DELETE</Button>
                   </TableCell>
                   <TableCell>
-                        <Button onClick={() => updateEmployeeOnOff(employee.employeeId)}>UPDATE</Button>
+                    <Button onClick={() => updateEmployeeOnOff(employee.employeeId)}>UPDATE</Button>
                   </TableCell>
                   <TableCell>
                     {updateOnOff ? 'update ON' : 'update OFF'}

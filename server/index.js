@@ -216,31 +216,33 @@ app.put('/updateemployee', (req, res) => {
   const userId = req.body.userid;
   const employeeId = req.body.employeeid;
   const firstName = req.body.firstname;
-
-  db.execute('UPDATE employees SET firstName=? WHERE userId=? AND employeeId=?', [firstName, userId, employeeId], (err, result) => {
-    if (err) {
-      res.send(err);
-    } else {
-      res.send(result);
-    }
-  })
-
-  // OTA VIELÄ LOPUT MUKAAN
-  /*const lastName = req.body.lastname;
+  const lastName = req.body.lastname;
   const jobTitle = req.body.jobtitle;
   const departmentId = req.body.departmentid;
   const seniority = req.body.seniority;
   const salary = req.body.salary;
   const startingDate = req.body.startingdate;
 
-  db.execute('UPDATE employees SET userId = ?, firstName = ?, lastName = ?, jobTitle = ?, departmentId = ?, seniority = ?, salary = ?, startingDate = ? WHERE employeeId = ? AND userId = ?',
-    [userId, firstName, lastName, jobTitle, departmentId, seniority, salary, startingDate, employeeId, userId], (err, result) => {
-      if (err) {
-        res.send(err);
-      } else {
-        res.send(result);
-      }
-  })*/
+  console.log('BACKEND updateemployee ' + userId);
+  console.log('BACKEND updateemployee ' + employeeId);
+  console.log('BACKEND updateemployee ' + firstName);
+  console.log('BACKEND updateemployee ' + lastName);
+  console.log('BACKEND updateemployee ' + jobTitle);
+  console.log('BACKEND updateemployee ' + departmentId);
+  console.log('BACKEND updateemployee ' + seniority);
+  console.log('BACKEND updateemployee ' + salary);
+  console.log('BACKEND updateemployee ' + startingDate);
+
+  db.execute('UPDATE employees SET firstName=?, lastName=?, jobTitle=?, departmentId=?, seniority=?, salary=?, startingDate=? WHERE userId=? AND employeeId=?;',
+    [firstName, lastName, jobTitle, departmentId, seniority, salary, startingDate, userId, employeeId], (err, result) => {
+    if (err) {
+      res.send(err);
+      console.log(err);
+    } else {
+      res.send(result);
+      console.log(result);
+    }
+  })
 })
 
 app.post('/adddepartment', (req, res) => {

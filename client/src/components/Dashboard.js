@@ -64,7 +64,7 @@ export default function Dashboard() {
     ))
 
     let id = (parseInt(jap.indexOf(departmentId)) + 1);
-    console.log("departmentin ID on: " + (parseInt(jap.indexOf(departmentId)) + 1));
+    //console.log("departmentin ID on: " + (parseInt(jap.indexOf(departmentId)) + 1));
 
     Axios.post('http://localhost:3001/addemployee', {
       userId: userId,
@@ -96,14 +96,14 @@ export default function Dashboard() {
       jep.push(department.name.toString())
     ))
     return (
-        <Autocomplete
-          options={jep}
-          value={departmentId}
-          renderInput={(params) => <TextField {...params} label='Department' />}
-          onChange={(event, newValue) => {setDepartmentId(newValue);}} // tarvitseeko 'eventtiä'?
-          size='small'
-          style={{minWidth: 150}}
-        />
+      <Autocomplete
+        options={jep}
+        value={departmentId}
+        renderInput={(params) => <TextField {...params} label='Department' />}
+        onChange={(event, newValue) => {setDepartmentId(newValue);}} // tarvitseeko 'eventtiä'?
+        size='small'
+        style={{minWidth: 150}}
+      />
     )
   }
 
