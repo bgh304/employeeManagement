@@ -142,6 +142,7 @@ app.post('/login', (req, res) => {
     );
 });
 
+// TODO: järjestä pyynnöt järjestykseen
 app.post('/addemployee', (req, res) => {
   const userId = req.body.userId;
   const firstName = req.body.firstName;
@@ -237,12 +238,31 @@ app.put('/updateemployee', (req, res) => {
     [firstName, lastName, jobTitle, departmentId, seniority, salary, startingDate, userId, employeeId], (err, result) => {
     if (err) {
       res.send(err);
-      console.log(err);
+      //console.log(err);
     } else {
       res.send(result);
-      console.log(result);
+      //console.log(result);
     }
   })
+})
+
+app.put('/updatedepartment', (req, res) => {
+  const userId = req.body.userid;
+  const departmentId = req.body.departmentid;
+  const departmentName = req.body.departmentname;
+  const departmentField = req.body.departmentfield;
+
+  db.execute('UPDATE departments SET name=?, field=? WHERE userId=? AND departmentId=?;',
+    [departmentName, departmentField, userId, departmentId], (err, result) => {
+      if (err) {
+        res.send(err);
+        console.log(err);
+      } else {
+        res.send(result);
+        console.log(result);
+      }
+    }
+  )
 })
 
 app.post('/adddepartment', (req, res) => {
@@ -268,6 +288,44 @@ app.get('/getdepartments', (req, res) => {
   const userId = req.query.userId;
 
   db.execute('SELECT * FROM departments WHERE userId=?', [userId], (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  })
+})
+
+app.post('/deleteallemployees', (req, res) => {
+  const userId = req.body.userid;
+  console.log('deleteallemployees userId on: ' + userId);
+
+  db.execute('DELETE FROM employees WHERE userId=?', [userId], (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  })
+})
+
+app.post('/deletealldepartments', (req, res) => {
+  const userId = req.body.userid;
+
+  db.execute('DELETE FROM departments WHERE userId=?', [userId], (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  })
+})
+
+app.post('/deleteaccount', (req, res) => {
+  const userId = req.body.userid;
+  //console.log('deleteaccount userId on: ' + userId);
+
+  db.execute('DELETE FROM users WHERE userId=?', [userId], (err, result) => {
     if (err) {
       res.send(err);
     } else {

@@ -3,6 +3,8 @@ import { BrowserRouter, useNavigate } from "react-router-dom";
 import Axios from 'axios';
 import { TextField } from "@mui/material";
 import { Button } from "@mui/material"
+import SettingsSharp from '@mui/icons-material/SettingsSharp';
+import ExitToAppSharpIcon from '@mui/icons-material/ExitToAppSharp';
 import '../App.css';
 
 import Departments from "./Departments";
@@ -54,12 +56,6 @@ export default function DepartmentsPage() {
     }
   }
 
-  const logout = () => {
-    localStorage.setItem('token', '');
-    //console.log('Dashboardissa asetettu localStorage on: ' + localStorage.getItem('token'));
-    navigate('/');
-  }
-
   const addDepartment = () => {
     return (
       <div>
@@ -69,6 +65,7 @@ export default function DepartmentsPage() {
           value={departmentName}
           onChange={e => setDepartmentName(e.target.value)}
           size='small'
+          inputProps={{ maxLength: 30 }}
         />
         <TextField
           id='departmentfield'
@@ -76,6 +73,7 @@ export default function DepartmentsPage() {
           value={departmentField}
           onChange={e => setDepartmentField(e.target.value)}
           size='small'
+          inputProps={{ maxLength: 30 }}
         />
         <Button
           variant='contained'
@@ -88,10 +86,32 @@ export default function DepartmentsPage() {
     )
   }
 
+  const logout = () => {
+    localStorage.setItem('token', '');
+    //console.log('Dashboardissa asetettu localStorage on: ' + localStorage.getItem('token'));
+    navigate('/');
+  }
+
+  const Settings = () => {
+    navigate('/settings');
+  }
+
   return (
     <div>
       <div className="logout">
-        <button onClick={() => logout()}>LOGOUT</button><br />
+        <SettingsSharp
+          color='primary'
+          fontSize='medium'
+          sx={{ paddingRight: 2 }}
+          onClick={() => Settings()}
+        />
+        <ExitToAppSharpIcon
+          color='secondary'
+          fontSize='medium'
+          onClick={() => logout()}
+        />
+        {/*<button onClick={() => Settings()}>SETTINGS</button>
+        <button onClick={() => logout()}>LOGOUT</button><br />*/}
       </div>
       <div>
         <Departments userIdProps={userId} updateDepartmentsProps={updateDepartments} />

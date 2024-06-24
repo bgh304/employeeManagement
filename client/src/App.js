@@ -6,6 +6,7 @@ import Layout from "./components/Layout";
 import Dashboard from "./components/Dashboard";
 import DepartmentsPage from "./components/DepartmentsPage";
 import Authenticate from "./components/Authenticate";
+import Settings from "./components/Settings";
 import HeaderFooter from "./components/HeaderFooter";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
             <Route index element={<Authenticate />} />
             <Route path='/dashboard' element={<Dashboard auth={false} />} />
             <Route path='/departmentspage' element={<DepartmentsPage />} />
+            <Route path='/settings' element={<Settings />} />
           </Route>
         </Routes> 
       </BrowserRouter>

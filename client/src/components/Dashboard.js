@@ -5,6 +5,9 @@ import Axios from 'axios';
 import { TextField } from "@mui/material";
 import { Button } from "@mui/material"
 import Autocomplete from '@mui/material/Autocomplete';
+//import { AddCircleSharpIcon, DeleteSharp, EditSharp, SettingsSharp, ExitToAppSharpIcon } from '@mui/icons-material/*';
+import SettingsSharp from '@mui/icons-material/SettingsSharp';
+import ExitToAppSharpIcon from '@mui/icons-material/ExitToAppSharp';
 import '../App.css';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -13,7 +16,6 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs";
 
 import Employees from "./Employees";
-
 
 //muuta functiot consteiksi
 export default function Dashboard() {
@@ -47,14 +49,19 @@ export default function Dashboard() {
     //console.log('loggaus onnistu');
   }
 
+  // Get Departments
+  useEffect(() => {
+    Axios.get('http://localhost:3001/getdepartments', { params: { userId: userId } }).then((response) => {
+      setDepartments(response.data);
+    })
+  }, [])
+
   // Update departments table
   useEffect(() => {
     Axios.get('http://localhost:3001/getdepartments', { params: { userId: userId } }).then((response) => {
       setDepartments(response.data);
     })
   }, [updateDepartments, userId]) // tarvitseeko userId? jos tarvitsee, muuta muutkin useEffectit
-
-  // Get departments' employees amount
 
   function addEmployeeToDatabase() {
     // VIIMEISTELE
@@ -71,7 +78,7 @@ export default function Dashboard() {
       firstName: firstName,
       lastName: lastName,
       jobTitle: jobTitle,
-      departmentId: id,
+      departmentId: departmentId,
       seniority: seniority,
       salary: salary,
       startingDate: dayjs(startingDate).format('YYYY/MM/DD')
@@ -83,24 +90,28 @@ export default function Dashboard() {
     }
   }
 
-  const logout = () => {
-    localStorage.setItem('token', '');
-    //console.log('Dashboardissa asetettu localStorage on: ' + localStorage.getItem('token'));
-    navigate('/');
-  }
-
   function DepartmentsBox(departmentsProps) {
     // VIIMEISTELE
     const jep = [];
-    Object.entries(departmentsProps).map(([key, department]) => (
+    const departmentIds = [];
+    Object.entries(departmentsProps).map(([key, department]) => ( // tarvitseeko key:tä?
       jep.push(department.name.toString())
     ))
+    Object.entries(departmentsProps).map(([key, department]) => (
+      departmentIds.push(parseInt(department.departmentId))
+    ))
+    //console.log('departmentIds[0] on: ' + departmentIds[0]);
+    // optionssa täytyy olla departmentId, mutta ne täytyy näyttää namena
     return (
       <Autocomplete
         options={jep}
         value={departmentId}
         renderInput={(params) => <TextField {...params} label='Department' />}
-        onChange={(event, newValue) => {setDepartmentId(newValue);}} // tarvitseeko 'eventtiä'?
+        onChange={(event, newValue) => {
+          // newValue on osaston nimi
+          console.log('departmentIds[jep.indexOf(newValue)] on: ' + departmentIds[jep.indexOf(newValue)])
+          setDepartmentId(parseInt(departmentIds[jep.indexOf(newValue)]));
+        }} // tarvitseeko 'eventtiä'?
         size='small'
         style={{minWidth: 150}}
       />
@@ -116,6 +127,7 @@ export default function Dashboard() {
           value={firstName}
           onChange={e => setFirstName(e.target.value)}
           size='small'
+          inputProps={{ maxLength: 20 }}
         />
         <TextField
           id='lastname'
@@ -123,6 +135,7 @@ export default function Dashboard() {
           value={lastName}
           onChange={e => setLastName(e.target.value)}
           size='small'
+          inputProps={{ maxLength: 20 }}
         />
         <TextField
           id='jobtitle'
@@ -130,6 +143,7 @@ export default function Dashboard() {
           value={jobTitle}
           onChange={e => setJobtitle(e.target.value)}
           size='small'
+          inputProps={{ maxLength: 20 }}
         />
 
         {DepartmentsBox(departments)}
@@ -140,6 +154,7 @@ export default function Dashboard() {
           value={seniority}
           onChange={e => setSeniority(e.target.value)}
           size='small'
+          inputProps={{ maxLength: 20 }}
         />
         <TextField
           id='salary'
@@ -158,7 +173,6 @@ export default function Dashboard() {
             slotProps={{ textField: { size: 'small' }}}
           />
         </LocalizationProvider>
-
         <Button
           variant='contained'
           color='success'
@@ -170,11 +184,33 @@ export default function Dashboard() {
     )
   }
 
+  const logout = () => {
+    localStorage.setItem('token', '');
+    //console.log('Dashboardissa asetettu localStorage on: ' + localStorage.getItem('token'));
+    navigate('/');
+  }
+
+  const Settings = () => {
+    navigate('/settings');
+  }
+
   // TODO: työntekijöiden ja osastojen lisäys omiksi funktioiksi
   return (
     <div>
       <div className="logout">
-        <button onClick={() => logout()}>LOGOUT</button><br />
+        <SettingsSharp
+          color='primary'
+          fontSize='medium'
+          sx={{ paddingRight: 2 }}
+          onClick={() => Settings()}
+        />
+        <ExitToAppSharpIcon
+          color='secondary'
+          fontSize='medium'
+          onClick={() => logout()}
+        />
+        {/*<button onClick={() => Settings()}>SETTINGS</button>
+        <button onClick={() => logout()}>LOGOUT</button><br />*/}
       </div>
       <div>
         <Employees userIdProps={userId} updateEmployeesProps={updateEmployees} />

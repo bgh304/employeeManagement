@@ -8,7 +8,7 @@ export default function Layout() {
       <nav>
         <ul>
           <li>
-            <Link to='/dashboard'>Dashboard</Link>
+            <Link to='/dashboard'>Employees</Link>
             <Link to='/departmentspage'>Departments</Link>
           </li>
         </ul>
