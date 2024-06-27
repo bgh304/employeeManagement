@@ -9,13 +9,15 @@ import '../App.css';
 
 import Departments from "./Departments";
 
+import { NotificationContainer, NotificationManager } from 'react-notifications';
+
 export default function DepartmentsPage() {
   const [userId, setUserId] = useState(localStorage.getItem('userid'));
   const [departmentName, setDepartmentName] = useState('');
   const [departmentField, setDepartmentField] = useState('');
   const [departments, setDepartments] = useState({});
 
-  const [updateDepartments, setUpdateDepartments] = useState(0);
+  const [updateDepartments, setUpdateDepartments] = useState(false);
 
   const [isAuth, setIsAuth] = useState(false);
 
@@ -44,15 +46,25 @@ export default function DepartmentsPage() {
 
   const addDepartmentToDatabase = () => {
     console.log('(addDepartmentToDatabase) userId on: ' + userId + ' name on: ' + departmentName + ' field on: ' + departmentField);
-    Axios.post('http://localhost:3001/adddepartment', {
-      userId: userId,
-      name: departmentName,
-      field: departmentField
-    })
-    if (updateDepartments === 0) { // tee funktioksi
-      setUpdateDepartments(1);
+
+    if (departments.find(department => department.name === departmentName) === undefined) {
+      Axios.post('http://localhost:3001/adddepartment', {
+        userId: userId,
+        name: departmentName,
+        field: departmentField
+      })
+      
+      if (!updateDepartments) {
+        setUpdateDepartments(true);
+      } else {
+        setUpdateDepartments(false);
+      }
+      setDepartmentName('');
+      setDepartmentField('');
+
     } else {
-      setUpdateDepartments(0);
+      NotificationManager.error('Department name is already in use!');
+      console.log('NIMI ON JO KÄYTÖSSÄ!');
     }
   }
 
@@ -117,6 +129,7 @@ export default function DepartmentsPage() {
         <Departments userIdProps={userId} updateDepartmentsProps={updateDepartments} />
       </div>
       {addDepartment()}
+      <NotificationContainer />
     </div>
   )
 }

@@ -277,6 +277,7 @@ app.post('/adddepartment', (req, res) => {
     [userId, name, field], (err, result) => {
       if (err) {
         console.log(err);
+        console.log("\'errno:\' on nyt " + err.errno);
       } else {
         console.log('insert data(department) succeeded');
       }

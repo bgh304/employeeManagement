@@ -4,6 +4,7 @@ import { Button, TextField } from '@mui/material';
 import EditSharp from '@mui/icons-material/EditSharp';
 import DeleteSharp from '@mui/icons-material/DeleteSharp';
 import SaveSharp from '@mui/icons-material/SaveSharp';
+import CancelSharp from '@mui/icons-material/CancelSharp';
 import './../App.css';
 import 'react-notifications/lib/notifications.css';
 
@@ -23,7 +24,7 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
   const [departmentName, setDepartmentName] = useState('');
   const [departmentField, setDepartmentField] = useState('');
 
-  const [updateDepartmentsDelete, setUpdateDepartmentsDelete] = useState(0);
+  const [updateDepartmentsDelete, setUpdateDepartmentsDelete] = useState(false);
   const [updateOnOff, setUpdateOnOff] = useState(false);
   const [updateDepartmentId, setUpdateDepartmentId] = useState();
 
@@ -50,47 +51,51 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
         //console.log(response.data.errno);
         if (response.data.errno === 1451) {
           return ( // onko return tarpeen?
-              NotificationManager.error('Please remove all employees from the department before deleting.', 'Error', 6000)
+            NotificationManager.error('Please remove all employees from the department before deleting.', 'Error', 6000)
           )
         }
       }).catch(function (error) {
         console.log(error);
       })
-      if (updateDepartmentsDelete === 0) { // tee funktioksi (boolean?)
-        setUpdateDepartmentsDelete(1);
+      if (!updateDepartmentsDelete) {
+        setUpdateDepartmentsDelete(true);
       } else {
-        setUpdateDepartmentsDelete(0);
+        setUpdateDepartmentsDelete(false);
       }
   }
 
   const UpdateDepartmentToDatabase = (id, department) => {
     // VIIMEISTELE, muuta muuttujanimiä
 
-    // TODO: kokeile laittaa muuttujat yhteen riviin
-    let departmentname;
-    let departmentfield;
+    if (departments.find(department => department.name === departmentName) === undefined) {
+      // TODO: kokeile laittaa muuttujat yhteen riviin
+      let departmentname;
+      let departmentfield;
 
-    // TODO: selvitä voiko else-haaran tehdä tyhjäksi
-    departmentName === '' ? departmentname = department.name : departmentname = departmentName;
-    departmentField === '' ? departmentfield = department.field : departmentfield = departmentField;
-    console.log('departmentname on: ' + departmentname);
-    console.log('departmentfield on: ' + departmentfield);
+      // TODO: selvitä voiko else-haaran tehdä tyhjäksi
+      departmentName === '' ? departmentname = department.name : departmentname = departmentName;
+      departmentField === '' ? departmentfield = department.field : departmentfield = departmentField;
+      console.log('departmentname on: ' + departmentname);
+      console.log('departmentfield on: ' + departmentfield);
 
-    Axios.put('http://localhost:3001/updatedepartment', {
-      userid: userIdProps,
-      departmentid: id,
-      departmentname: departmentname,
-      departmentfield: departmentfield
-    })
+      Axios.put('http://localhost:3001/updatedepartment', {
+        userid: userIdProps,
+        departmentid: id,
+        departmentname: departmentname,
+        departmentfield: departmentfield
+      })
 
-    setDepartmentName('');
-    setDepartmentField('');
+      setDepartmentName('');
+      setDepartmentField('');
 
-    setUpdateOnOff(false);
-    if (updateDepartmentsDelete === 0) { // tee funktioksi (boolean?)
-      setUpdateDepartmentsDelete(1); // muuta nimi
+      setUpdateOnOff(false);
+      if (!updateDepartmentsDelete) {
+        setUpdateDepartmentsDelete(true); // muuta nimi
+      } else {
+        setUpdateDepartmentsDelete(false);
+      }
     } else {
-      setUpdateDepartmentsDelete(0);
+      NotificationManager.error('Department name is already in use!');
     }
   }
 
@@ -167,6 +172,13 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
                     {/*<Button onClick={() =>
                       UpdateDepartmentToDatabase(department.departmentId, departments[key])}
                     >UPDATE</Button>*/}
+                  </TableCell>
+                  <TableCell>
+                    <CancelSharp
+                      color='action'
+                      fontSize='large'
+                      onClick={() => setUpdateOnOff(false)}
+                    />
                   </TableCell>
                   </TableRow>
                 :

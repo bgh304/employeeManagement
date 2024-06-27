@@ -18,7 +18,7 @@ import dayjs from "dayjs";
 import Employees from "./Employees";
 
 //muuta functiot consteiksi
-export default function Dashboard() {
+export default function EmployeesPage() {
   const [userId, setUserId] = useState(localStorage.getItem('userid'));
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -36,7 +36,7 @@ export default function Dashboard() {
   const [departments, setDepartments] = useState({});
   const [departmentsEmployeesAmount, setDepartmentsEmployeesAmount] = useState({});
 
-  const [updateEmployees, setUpdateEmployees] = useState(0);
+  const [updateEmployees, setUpdateEmployees] = useState(false);
   const [updateDepartments, setUpdateDepartments] = useState(0);
 
   const [isAuth, setIsAuth] = useState(false);
@@ -61,7 +61,7 @@ export default function Dashboard() {
     Axios.get('http://localhost:3001/getdepartments', { params: { userId: userId } }).then((response) => {
       setDepartments(response.data);
     })
-  }, [updateDepartments, userId]) // tarvitseeko userId? jos tarvitsee, muuta muutkin useEffectit
+  }, [updateDepartments, userId]) // tarvitseeko updateDepartments? tarvitseeko userId?, jos tarvitsee, muuta muutkin useEffectit
 
   function addEmployeeToDatabase() {
     // VIIMEISTELE
@@ -83,11 +83,19 @@ export default function Dashboard() {
       salary: salary,
       startingDate: dayjs(startingDate).format('YYYY/MM/DD')
     })
-    if (updateEmployees === 0) { // tee funktioksi
-      setUpdateEmployees(1);
+
+    if (!updateEmployees) {
+      setUpdateEmployees(true);
     } else {
-      setUpdateEmployees(0);
+      setUpdateEmployees(false);
     }
+    
+    setFirstName('');
+    setLastName('');
+    setJobtitle('');
+    setDepartmentId('');
+    setSeniority('');
+    setSalary('');
   }
 
   function DepartmentsBox(departmentsProps) {

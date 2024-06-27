@@ -52,7 +52,7 @@ export default function Authenticate() {
           localStorage.setItem('userid', response.data.userid);
           setLoginStatus(true);
           setLoginSuccess('');
-          navigate('/dashboard', {state: {token: localStorage.getItem("token"), auth: true}}); //tarviiko propseja?
+          navigate('/employeespage', {state: {token: localStorage.getItem("token"), auth: true}}); //tarviiko propseja?
         }
       })
     };
@@ -113,7 +113,7 @@ export default function Authenticate() {
           />
           <p style={{fontWeight: 'bold', color: 'red', margin: '2px'}}>{loginSuccess}</p>
         </div>
-            <button onClick={login}>Login</button>
+        <button onClick={login}>Login</button>
       </div>
     );
 }

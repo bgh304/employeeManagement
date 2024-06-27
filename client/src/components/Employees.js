@@ -6,6 +6,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import EditSharp from '@mui/icons-material/EditSharp';
 import DeleteSharp from '@mui/icons-material/DeleteSharp';
 import SaveSharp from '@mui/icons-material/SaveSharp';
+import CancelSharp from '@mui/icons-material/CancelSharp';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
@@ -36,7 +37,7 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
   const [salary, setSalary] = useState(0);
   const [startingDate, setStartingDate] = useState('');
 
-  const [updateEmployeesDelete, setUpdateEmployeesDelete] = useState(0);
+  const [updateEmployeesDelete, setUpdateEmployeesDelete] = useState(false);
   const [updateOnOff, setUpdateOnOff] = useState(false);
   const [updateEmployeeId, setUpdateEmployeeId] = useState();
 
@@ -58,17 +59,16 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
     })
   }, [updateEmployeesProps, userIdProps, updateEmployeesDelete]) // tarvitseeko userId? jos tarvitsee, muuta muutkin useEffectit
 
-
   const deleteEmployee = (id) => {
     //console.log('Employee.js userIdProps on: ' + userIdProps);
     Axios.post('http://localhost:3001/deleteemployee', {
       userid: userIdProps,
       employeeid: id
     })
-    if (updateEmployeesDelete === 0) { // tee funktioksi (boolean?)
-      setUpdateEmployeesDelete(1);
+    if (!updateEmployeesDelete) { // (boolean?)
+      setUpdateEmployeesDelete(true);
     } else {
-      setUpdateEmployeesDelete(0);
+      setUpdateEmployeesDelete(false);
     }
   }
 
@@ -124,10 +124,10 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
     setStartingDate('');
 
     setUpdateOnOff(false);
-    if (updateEmployeesDelete === 0) { // tee funktioksi (boolean?)
-      setUpdateEmployeesDelete(1); // muuta nimi
+    if (!updateEmployeesDelete) { // (boolean?)
+      setUpdateEmployeesDelete(true); // muuta nimi
     } else {
-      setUpdateEmployeesDelete(0);
+      setUpdateEmployeesDelete(false);
     }
   }
 
@@ -302,6 +302,11 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
                         UpdateEmployeeToDatabase(employee.employeeId, employees[key])}
                         >UPDATE</Button>*/}
                     </TableCell>
+                    <CancelSharp
+                      color='action'
+                      fontSize='large'
+                      onClick={() => setUpdateOnOff(false)}
+                    />
                     </TableRow>
                   :
                   <TableRow
