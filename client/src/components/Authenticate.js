@@ -2,10 +2,12 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from 'axios';
+import { TextField } from "@mui/material";
+import { Button } from "@mui/material"
 import '../App.css';
 
 export default function Authenticate() {
-    const [usernameReg, setUernameReg] = useState("");
+    const [usernameReg, setUsernameReg] = useState("");
     const [passwordReg, setPasswordReg] = useState ("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState ("");
@@ -20,10 +22,11 @@ export default function Authenticate() {
     Axios.defaults.withCredentials = true;
 
     const register = () => {
+      console.log('register() username on: ' + usernameReg);
       if (usernameReg !== '' && passwordReg !== '') {
         Axios.post("http://localhost:3001/register", {
           username: usernameReg,
-          password: passwordReg,
+          password: passwordReg
         }).then((response) => {
           console.log(response);
         });
@@ -31,7 +34,6 @@ export default function Authenticate() {
       } else {
         setRegistrationSuccess('Please set both username and password.')
       }
-      
     };
   
     const login = () => {
@@ -57,13 +59,13 @@ export default function Authenticate() {
       })
     };
 
-    const LoginKeyboard = (event) => {
+    const loginKeyboard = (event) => {
       if (event.key === 'Enter') {
         login();
       }
     }
 
-    const userAuthenticeted = () => {
+    const userAuthenticeted = () => { // tarvitseeko enään?
       Axios.get("http://localhost:3001/isUserAuth", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
@@ -77,43 +79,63 @@ export default function Authenticate() {
       <div className="App">
         <div className="registration">
           <h3>Registration</h3>
-          <label>Username</label>
-          <input 
-            type="text" 
-            onChange={(e) => {
-              setUernameReg(e.target.value);
-            }}
-          /><br/>
-          <label>password</label>
-          <input 
-            type="password"
-            onChange={(e) =>{
-              setPasswordReg(e.target.value);
-            }} 
-          /> <br />
-          <p style={{fontWeight: 'bold', color: 'red', margin: '2px'}}>{regirstrationSuccess}</p>
-          <button onClick={register}> Register</button>
+          <TextField
+            id='usernamereg'
+            placeholder='Username'
+            onChange={e => setUsernameReg(e.target.value)}
+            size='small'
+            inputProps={{ maxLength: 30 }}
+            sx={{ backgroundColor: 'white' }}
+          />
+          <TextField
+            id='passwordreg'
+            placeholder='Password'
+            type='password'
+            onChange={e => setPasswordReg(e.target.value)}
+            size='small'
+            sx={{ backgroundColor: 'white' }}
+          />
+          <p style={{fontFamily: 'verdana', color: 'red', margin: '4px'}}>
+            {regirstrationSuccess}
+          </p>
+          <Button
+            variant='contained'
+            color='action'
+            onClick={() => register()}
+          >
+            REGISTER
+          </Button>
         </div>
         <div className="login">
           <h3>Login</h3>
-          <input 
-            type="text" 
-            placeholder="Username..." 
-            onChange = { (e) => {
-              setUsername (e.target.value);
-            }}
-          /> <br/>
-          <input 
-            type="password" 
-            placeholder="Password..."
-            onChange = { (e) => {
-              setPassword (e.target.value);
-            }}
-            onKeyDown={LoginKeyboard}
+          <TextField
+            id='username'
+            placeholder='Username...'
+            onChange={e => setUsername(e.target.value)}
+            size='small'
+            inputProps={{ maxLength: 30 }}
+            sx={{ backgroundColor: 'white' }}
           />
-          <p style={{fontWeight: 'bold', color: 'red', margin: '2px'}}>{loginSuccess}</p>
+          <TextField
+            id='password'
+            placeholder='Password...'
+            type='password'
+            onChange={e => setPassword(e.target.value)}
+            size='small'
+            sx={{ backgroundColor: 'white' }}
+            onKeyDown={loginKeyboard}
+          />
+          <p style={{fontFamily: 'verdana', color: 'red', margin: '4px'}}>
+            {loginSuccess}
+          </p>
         </div>
-        <button onClick={login}>Login</button>
+        <Button
+          variant='contained'
+          color='success'
+          onClick={() => login()}
+        >
+          LOGIN
+        </Button>
       </div>
     );
 }

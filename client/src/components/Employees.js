@@ -72,7 +72,7 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
     }
   }
 
-  const UpdateEmployeeToDatabase = (id, employee) => {
+  const updateEmployeeToDatabase = (id, employee) => {
     //console.log('UpdateEmployeeToDatabase: ' + lastName);
     // VIIMEISTELE, muuta muuttujanimiä
     let jap = [];
@@ -163,7 +163,7 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
     )
   }
 
-  const UpdateEmployeeIdFunction = (id) => { // muuta nimi
+  const updateEmployeeIdFunction = (id) => { // muuta nimi
     if (id === updateEmployeeId) {
       return true;
     } else {
@@ -171,7 +171,8 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
     }
   }
 
-  function DepartmentsBox(departmentsProps, id) {
+  // muuta constiksi!
+  function departmentsBox(departmentsProps, id) {
     // VIIMEISTELE
     const jep = [];
     const departmentIds = [];
@@ -202,7 +203,7 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
       <h4>Employees</h4>
       <TableContainer
         component={Paper}
-        sx={{ height: '35em' }}
+        sx={{ height: '35.1em'}}
       >
         <Table
           sx={{ minWidth: 650 }}
@@ -223,7 +224,7 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
             </TableHead>
             <TableBody>
               {Object.entries(employees).map(([key, employee]) => (
-                updateOnOff && UpdateEmployeeIdFunction(employee.employeeId)
+                updateOnOff && updateEmployeeIdFunction(employee.employeeId)
                   ?
                     <TableRow
                       key={key}
@@ -260,7 +261,7 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
                       />
                     </TableCell>
                     <TableCell>
-                      {DepartmentsBox(departments, employee.departmentId)}
+                      {departmentsBox(departments, employee.departmentId)}
                     </TableCell>
                     <TableCell>
                       <TextField
@@ -296,7 +297,7 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
                     <SaveSharp
                       color='success'
                       fontSize='large'
-                      onClick={() => UpdateEmployeeToDatabase(employee.employeeId, employees[key])}
+                      onClick={() => updateEmployeeToDatabase(employee.employeeId, employees[key])}
                     />
                       {/*<Button onClick={() =>
                         UpdateEmployeeToDatabase(employee.employeeId, employees[key])}

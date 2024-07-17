@@ -64,7 +64,7 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
       }
   }
 
-  const UpdateDepartmentToDatabase = (id, department) => {
+  const updateDepartmentToDatabase = (id, department) => {
     // VIIMEISTELE, muuta muuttujanimiä
 
     if (departments.find(department => department.name === departmentName) === undefined) {
@@ -108,7 +108,7 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
     }
   }
 
-  const UpdateDepartmentIdFunction = (id) => { // muuta nimi
+  const updateDepartmentIdFunction = (id) => { // muuta nimi
     if (id === updateDepartmentId) {
       return true;
     } else {
@@ -137,7 +137,7 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
           </TableHead>
           <TableBody>
             {Object.entries(departments).map(([key, department]) => (
-              updateOnOff && UpdateDepartmentIdFunction(department.departmentId)
+              updateOnOff && updateDepartmentIdFunction(department.departmentId)
                 ?
                   <TableRow
                     key={key}
@@ -165,9 +165,9 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
                   </TableCell>
                   <TableCell>
                     <SaveSharp
-                      color='action'
+                      color='success'
                       fontSize='large'
-                      onClick={() => UpdateDepartmentToDatabase(department.departmentId, departments[key])}
+                      onClick={() => updateDepartmentToDatabase(department.departmentId, departments[key])}
                     />
                     {/*<Button onClick={() =>
                       UpdateDepartmentToDatabase(department.departmentId, departments[key])}

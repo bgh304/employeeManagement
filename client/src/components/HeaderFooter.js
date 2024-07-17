@@ -14,7 +14,7 @@ export default function HeaderFooter(props) {
           height: '6%',
         }}
       >
-        <p>HEADER</p>
+        <p>SIMPLE EMPLOYEE MANAGEMENT SYSTEM</p>
       </div>
     )
   }
@@ -29,7 +29,7 @@ export default function HeaderFooter(props) {
           height: '6%'
         }}
       >
-        <p>FOOTER</p>
+        <p />
       </div>
     )
   }

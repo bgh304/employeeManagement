@@ -63,6 +63,7 @@ export default function EmployeesPage() {
     })
   }, [updateDepartments, userId]) // tarvitseeko updateDepartments? tarvitseeko userId?, jos tarvitsee, muuta muutkin useEffectit
 
+  // muuta constiksi!
   function addEmployeeToDatabase() {
     // VIIMEISTELE
     let jap = [];
@@ -98,7 +99,8 @@ export default function EmployeesPage() {
     setSalary('');
   }
 
-  function DepartmentsBox(departmentsProps) {
+  // muuta constiksi!
+  function departmentsBox(departmentsProps) {
     // VIIMEISTELE
     const jep = [];
     const departmentIds = [];
@@ -154,7 +156,7 @@ export default function EmployeesPage() {
           inputProps={{ maxLength: 20 }}
         />
 
-        {DepartmentsBox(departments)}
+        {departmentsBox(departments)}
 
         <TextField
           id='seniority'
@@ -198,19 +200,19 @@ export default function EmployeesPage() {
     navigate('/');
   }
 
-  const Settings = () => {
+  const settings = () => {
     navigate('/settings');
   }
 
   // TODO: työntekijöiden ja osastojen lisäys omiksi funktioiksi
   return (
     <div>
-      <div className="logout">
+      <div className="logoutsettings">
         <SettingsSharp
           color='primary'
           fontSize='medium'
           sx={{ paddingRight: 2 }}
-          onClick={() => Settings()}
+          onClick={() => settings()}
         />
         <ExitToAppSharpIcon
           color='secondary'

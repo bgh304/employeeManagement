@@ -104,18 +104,18 @@ export default function DepartmentsPage() {
     navigate('/');
   }
 
-  const Settings = () => {
+  const settings = () => {
     navigate('/settings');
   }
 
   return (
     <div>
-      <div className="logout">
+      <div className="logoutsettings">
         <SettingsSharp
           color='primary'
           fontSize='medium'
           sx={{ paddingRight: 2 }}
-          onClick={() => Settings()}
+          onClick={() => settings()}
         />
         <ExitToAppSharpIcon
           color='secondary'

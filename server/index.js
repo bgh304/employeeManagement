@@ -142,6 +142,31 @@ app.post('/login', (req, res) => {
     );
 });
 
+app.get('/isusernew', (req, res) => {
+  const userId = req.query.userId;
+// muuta * newUser:ksi
+  db.execute('SELECT * FROM users WHERE userId=?', [userId], (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  })
+})
+
+app.put('/updateisusernew', (req, res) => {
+  const userId = req.body.userId;
+  const newUser = req.body.newUser;
+
+  db.execute('UPDATE users SET newUser=? WHERE userId=?;', [newUser, userId], (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  })
+})
+
 // TODO: järjestä pyynnöt järjestykseen
 app.post('/addemployee', (req, res) => {
   const userId = req.body.userId;

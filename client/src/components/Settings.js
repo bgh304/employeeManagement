@@ -20,7 +20,7 @@ export default function Settings() {
   const [isAuth, setIsAuth] = useState(false);
   const navigate = useNavigate();
 
-  const DeleteAccount = () => {
+  const deleteAccount = () => {
     console.log('DeleteAccount userId on: ' + userId);
     Axios.post('http://localhost:3001/deleteallemployees', {
       userid: userId
@@ -37,28 +37,25 @@ export default function Settings() {
     )
   }
 
-  const GoBack = () => {
+  const goBack = () => {
     navigate(-1);
   }
 
-  const HandleClickOpen = () => {
+  // laita handleClickOpen ja handleClickClose samaan funktioon
+  const handleClickOpen = () => {
     setOpen(true);
   }
 
-  const HandleClickClose = () => {
+  const handleClickClose = () => {
     setOpen(false);
-  }
-
-  const Action = () => {
-    console.log('toiminto');
   }
 
   return (
     <div>
-      <Button onClick={HandleClickOpen}>DELETE ACCOUNT</Button><br />
+      <Button onClick={handleClickOpen}>DELETE ACCOUNT</Button><br />
       <Dialog
         open={open}
-        onClose={HandleClickClose}
+        onClose={handleClickClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -66,16 +63,16 @@ export default function Settings() {
           {"You are about to delete this account!"}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
-            Do you really want to delete this account?
+          <DialogContentText id='alert-dialog-description' color='red'>
+            Are you sure you want to delete this account?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={HandleClickClose}>Don't delete</Button>
-          <Button onClick={DeleteAccount} autoFocus>DELETE</Button>
+          <Button onClick={handleClickClose}>Don't delete</Button>
+          <Button onClick={deleteAccount} autoFocus sx={{ color: 'red' }}>DELETE</Button>
         </DialogActions>
       </Dialog>
-      <Button onClick={() => GoBack()}>Go Back</Button>
+      <Button onClick={() => goBack()}>Go Back</Button>
     </div>
   )
 }
