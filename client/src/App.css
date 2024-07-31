@@ -2,28 +2,37 @@
   text-align: center;
   background: linear-gradient(
     rgb(245, 229, 203) 0%, rgb(245, 229, 203) 2%,
-    rgb(240, 240, 240) 2%, rgb(240, 240, 240) 98%,
+    rgb(249, 247, 244) 2%, rgb(249, 247, 244) 98%,
     rgb(245, 229, 203) 98%, rgb(245, 229, 203) 100%
   );
   margin: -10px;
 }
-/*  background-color: rgb(240, 240, 240);*/
-/*
-to right, green 0%, green 80%, red 80%, red 100%
-*/
+
+.logo {
+  align-items: bottom;
+  border: 2px;
+}
+
+.registrationlogin {
+  display: flex;
+  flex-direction: column;
+  width: 18%;
+}
 
 .registration {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  align-content: stretch;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin-top: -25px;
+  margin-bottom: 30px;
 }
 
 .login {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  align-content: stretch;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 input {
@@ -34,6 +43,7 @@ input {
 .header {
   background-color: rgb(232, 202, 120);
   font-size: 25px;
+  min-height: 40px;
 }
 
 .header > p {
@@ -43,7 +53,7 @@ input {
   font-family: Arial, Helvetica, sans-serif;
   font-style: italic;
   font-weight: bold;
-  font-size: 25px;
+  font-size: 15px;
   letter-spacing: -1px;
   opacity: 0.85;
 }
@@ -61,51 +71,58 @@ input {
 .logoutsettings {
   text-align: right;
   margin-top: -40px;
-  margin-bottom: -30px;
+  margin-bottom: -40px;
+  padding-top: 9px;
   margin-right: 1%;
 }
 
 .addemployee {
   display: flex;
   justify-content: space-between;
-  flex-grow: 0;
   gap: 10px;
   padding-right: 10px;
   padding-left: 10px;
   margin-top: 10px;
 }
 
-.addemployee > input {
+.adddepartment {
   display: flex;
-  flex-grow: 0;
-  max-height: 30px;
-
-}
-
-/*TARVIIKO ENÄÄN?*/
-/* Hide arrows/spinners:
-Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Hide arrows/spinners:
-Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
+  justify-content: space-between;
+  gap: 50px;
+  padding-right: 50px;
+  padding-left: 50px;
+  margin-top: 10px;
 }
 
 .addemployee > button {
-  width: 150px;
-  height: 35px;
+  height: 39px;
   font-weight: bold;
 }
 
-.employeesanddepartments > h4 {
-  text-align: left;
-  margin-left: 10px;
-  margin-bottom: 4px;
+.adddepartment > button {
+  height: 39px;
+  font-weight: bold;
 }
 
+.navigation > nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  background-color: rgb(182, 173, 155);
+  margin-top: -3px;
+}
+
+.navigationbutton {
+  height: 1%;
+  margin-top: -10%;
+  margin-bottom: -10%;
+}
+
+.navigationbutton > p {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 25px;
+  letter-spacing: 2px;
+  color: rgb(78, 59, 35);
+}
+
+a {text-decoration: none;}

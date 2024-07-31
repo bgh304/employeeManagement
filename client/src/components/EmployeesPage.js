@@ -1,52 +1,49 @@
-import React from "react"; //usestate/useeffect samaan
-import { useState, useEffect } from "react";
-import { BrowserRouter, useNavigate } from "react-router-dom";
-import Axios from 'axios';
-import { TextField } from "@mui/material";
-import { Button } from "@mui/material"
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { TextField } from '@mui/material';
+import { Button } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
-//import { AddCircleSharpIcon, DeleteSharp, EditSharp, SettingsSharp, ExitToAppSharpIcon } from '@mui/icons-material/*';
-import SettingsSharp from '@mui/icons-material/SettingsSharp';
-import ExitToAppSharpIcon from '@mui/icons-material/ExitToAppSharp';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
+import Axios from 'axios';
 import '../App.css';
 
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from "dayjs";
+import SettingsSharp from '@mui/icons-material/SettingsSharp';
+import ExitToAppSharpIcon from '@mui/icons-material/ExitToAppSharp';
 
-import Employees from "./Employees";
+import Employees from './Employees';
 
-//muuta functiot consteiksi
 export default function EmployeesPage() {
   const [userId, setUserId] = useState(localStorage.getItem('userid'));
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [jobTitle, setJobtitle] = useState('');
-  const [departmentId, setDepartmentId] = useState('');
+  const [departmentId, setDepartmentId] = useState(null);
   const [seniority, setSeniority] = useState('');
   const [salary, setSalary] = useState('');
   const [startingDate, setStartingDate] = useState('');
 
-  const [departmentName, setDepartmentName] = useState('');
-  const [departmentField, setDepartmentField] = useState('');
-
-  const [data, setData] = useState(''); //muuta allEmployeeksi
-  const [employees, setEmployees] = useState({});
   const [departments, setDepartments] = useState({});
-  const [departmentsEmployeesAmount, setDepartmentsEmployeesAmount] = useState({});
 
   const [updateEmployees, setUpdateEmployees] = useState(false);
   const [updateDepartments, setUpdateDepartments] = useState(0);
 
-  const [isAuth, setIsAuth] = useState(false);
-
   const navigate = useNavigate();
+
+  const theme = createTheme({
+    palette: {
+      beige: {
+        main: 'rgb(144, 119, 53)',
+        dark: 'rgb(98, 77, 19)',
+      },
+    },
+  });
 
   if (localStorage.getItem('token') === '') {
     navigate('/');
-  } else {
-    //console.log('loggaus onnistu');
   }
 
   // Get Departments
@@ -61,18 +58,14 @@ export default function EmployeesPage() {
     Axios.get('http://localhost:3001/getdepartments', { params: { userId: userId } }).then((response) => {
       setDepartments(response.data);
     })
-  }, [updateDepartments, userId]) // tarvitseeko updateDepartments? tarvitseeko userId?, jos tarvitsee, muuta muutkin useEffectit
+  }, [updateDepartments, userId])
 
-  // muuta constiksi!
-  function addEmployeeToDatabase() {
-    // VIIMEISTELE
-    let jap = [];
+  const addEmployeeToDatabase = () => {
+    let departmentNames = [];
+
     Object.entries(departments).map(([key, department]) => (
-      jap.push(department.name.toString())
+      departmentNames.push(department.name.toString())
     ))
-
-    let id = (parseInt(jap.indexOf(departmentId)) + 1);
-    //console.log("departmentin ID on: " + (parseInt(jap.indexOf(departmentId)) + 1));
 
     Axios.post('http://localhost:3001/addemployee', {
       userId: userId,
@@ -99,44 +92,41 @@ export default function EmployeesPage() {
     setSalary('');
   }
 
-  // muuta constiksi!
-  function departmentsBox(departmentsProps) {
-    // VIIMEISTELE
-    const jep = [];
+  const departmentsBox = (departmentsProps) => {
+    const departmentNames = [];
     const departmentIds = [];
-    Object.entries(departmentsProps).map(([key, department]) => ( // tarvitseeko key:tä?
-      jep.push(department.name.toString())
+
+    Object.entries(departmentsProps).map(([key, department]) => (
+      departmentNames.push(department.name.toString())
     ))
     Object.entries(departmentsProps).map(([key, department]) => (
       departmentIds.push(parseInt(department.departmentId))
     ))
-    //console.log('departmentIds[0] on: ' + departmentIds[0]);
-    // optionssa täytyy olla departmentId, mutta ne täytyy näyttää namena
+
     return (
       <Autocomplete
-        options={jep}
+        options={departmentNames}
         value={departmentId}
         renderInput={(params) => <TextField {...params} label='Department' />}
         onChange={(event, newValue) => {
-          // newValue on osaston nimi
-          console.log('departmentIds[jep.indexOf(newValue)] on: ' + departmentIds[jep.indexOf(newValue)])
-          setDepartmentId(parseInt(departmentIds[jep.indexOf(newValue)]));
-        }} // tarvitseeko 'eventtiä'?
+          setDepartmentId(parseInt(departmentIds[departmentNames.indexOf(newValue)]));
+        }}
         size='small'
-        style={{minWidth: 150}}
+        sx={{ minWidth: 150, bgcolor: 'white' }}
       />
     )
   }
 
   const addEmployee = () => {
     return (
-      <div className="addemployee">
+      <div className='addemployee'>
         <TextField
           id='firstname'
           placeholder='First Name'
           value={firstName}
           onChange={e => setFirstName(e.target.value)}
           size='small'
+          sx={{ bgcolor: 'white' }}
           inputProps={{ maxLength: 20 }}
         />
         <TextField
@@ -145,6 +135,7 @@ export default function EmployeesPage() {
           value={lastName}
           onChange={e => setLastName(e.target.value)}
           size='small'
+          sx={{ bgcolor: 'white' }}
           inputProps={{ maxLength: 20 }}
         />
         <TextField
@@ -153,6 +144,7 @@ export default function EmployeesPage() {
           value={jobTitle}
           onChange={e => setJobtitle(e.target.value)}
           size='small'
+          sx={{ bgcolor: 'white' }}
           inputProps={{ maxLength: 20 }}
         />
 
@@ -164,39 +156,49 @@ export default function EmployeesPage() {
           value={seniority}
           onChange={e => setSeniority(e.target.value)}
           size='small'
+          sx={{ bgcolor: 'white' }}
           inputProps={{ maxLength: 20 }}
         />
         <TextField
           id='salary'
           placeholder='Salary'
           value={salary}
-          onChange={e => setSalary(e.target.value)}
+          onChange={e => {
+            if (e.target.value.match(/[\D]/)) {
+              e.target.value = e.target.value.replace(/\D/g, '')
+            } else {
+              setSalary(e.target.value)}
+            }
+          }
+          sx={{ bgcolor: 'white' }}
           size='small'
         />
 
         <LocalizationProvider dateAdapter={AdapterDayjs} size='small'>
-          <DatePicker // TODO: maxDate
+          <DatePicker
             id='startingdate'
             placeholder='Starting Date'
-            value={null} // <- tarvitseeko tätä?
             onChange={(newStartingDate) => setStartingDate(newStartingDate)}
+            sx={{ bgcolor: 'white' }}
             slotProps={{ textField: { size: 'small' }}}
           />
         </LocalizationProvider>
-        <Button
-          variant='contained'
-          color='success'
-          onClick={() => addEmployeeToDatabase()}
-        >
-          ADD EMPLOYEE
-        </Button>
+        <ThemeProvider theme={theme}>
+          <Button
+            variant='contained'
+            color='beige'
+            sx={{ color: 'rgb(243, 240, 230)', width: '9%' }}
+            onClick={() => addEmployeeToDatabase()}
+          >
+            ADD
+          </Button>
+        </ThemeProvider>
       </div>
     )
   }
 
   const logout = () => {
     localStorage.setItem('token', '');
-    //console.log('Dashboardissa asetettu localStorage on: ' + localStorage.getItem('token'));
     navigate('/');
   }
 
@@ -204,25 +206,21 @@ export default function EmployeesPage() {
     navigate('/settings');
   }
 
-  // TODO: työntekijöiden ja osastojen lisäys omiksi funktioiksi
   return (
     <div>
       <div className="logoutsettings">
         <SettingsSharp
-          color='primary'
+          sx={{ color: 'rgb(124, 101, 38)', paddingRight: 2 }}
           fontSize='medium'
-          sx={{ paddingRight: 2 }}
           onClick={() => settings()}
         />
         <ExitToAppSharpIcon
-          color='secondary'
+          sx={{ color: 'rgb(124, 101, 38)' }}
           fontSize='medium'
           onClick={() => logout()}
         />
-        {/*<button onClick={() => Settings()}>SETTINGS</button>
-        <button onClick={() => logout()}>LOGOUT</button><br />*/}
       </div>
-      <div>
+      <div style={{ marginTop: '43px' }}>
         <Employees userIdProps={userId} updateEmployeesProps={updateEmployees} />
       </div>
       <div>
@@ -231,10 +229,3 @@ export default function EmployeesPage() {
     </div>
   );
 }
-
-/*
-
-
-
-
-*/

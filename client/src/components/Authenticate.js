@@ -1,82 +1,83 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Axios from 'axios';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TextField } from "@mui/material";
 import { Button } from "@mui/material"
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Axios from 'axios';
 import '../App.css';
 
+import MyImage from '../logo.jpeg'; // TODO: vaihda tuotannossa kuva pois lokaalista
+
 export default function Authenticate() {
-    const [usernameReg, setUsernameReg] = useState("");
-    const [passwordReg, setPasswordReg] = useState ("");
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState ("");
-  
-    const [loginSuccess, setLoginSuccess] = useState('');
-    const [regirstrationSuccess, setRegistrationSuccess] = useState('');
-    const [loginStatus, setLoginStatus] = useState(false); //tarviiko enään?
-    const [token, setToken] = useState(''); //tarviiko enään?
+  const [usernameReg, setUsernameReg] = useState('');
+  const [passwordReg, setPasswordReg] = useState ('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState ('');
 
-    const navigate = useNavigate();
+  const [loginSuccess, setLoginSuccess] = useState('');
+  const [regirstrationSuccess, setRegistrationSuccess] = useState('');
 
-    Axios.defaults.withCredentials = true;
+  const navigate = useNavigate();
 
-    const register = () => {
-      console.log('register() username on: ' + usernameReg);
-      if (usernameReg !== '' && passwordReg !== '') {
-        Axios.post("http://localhost:3001/register", {
-          username: usernameReg,
-          password: passwordReg
-        }).then((response) => {
-          console.log(response);
-        });
-        setRegistrationSuccess('');
-      } else {
-        setRegistrationSuccess('Please set both username and password.')
-      }
-    };
-  
-    const login = () => {
-      console.log("login?");
-      Axios.post("http://localhost:3001/login", {
-        username: username,
-        password: password,
-      }).then((response) => {
-        if (!response.data.auth) {
-          setLoginStatus(false);
-          console.log('login failed');
-          setLoginSuccess('Login failed.')
-        } else {
-          console.log(response.data);
-          setToken(response.data.token);
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem('user', response.data.user);
-          localStorage.setItem('userid', response.data.userid);
-          setLoginStatus(true);
-          setLoginSuccess('');
-          navigate('/employeespage', {state: {token: localStorage.getItem("token"), auth: true}}); //tarviiko propseja?
-        }
-      })
-    };
+  const theme = createTheme({
+    palette: {
+      beige: {
+        main: 'rgb(170, 136, 42)',
+        dark: 'rgb(121, 96, 29)',
+      },
+    },
+  });
 
-    const loginKeyboard = (event) => {
-      if (event.key === 'Enter') {
-        login();
-      }
-    }
+  Axios.defaults.withCredentials = true;
 
-    const userAuthenticeted = () => { // tarvitseeko enään?
-      Axios.get("http://localhost:3001/isUserAuth", {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-      }).then((response) => {
-        console.log(response);
+  const register = () => {
+    if (usernameReg !== '' && passwordReg !== '') {
+      Axios.post("http://localhost:3001/register", {
+        username: usernameReg,
+        password: passwordReg
       });
-    };
+      setRegistrationSuccess('');
+    } else {
+      setRegistrationSuccess('Please set both username and password.')
+    }
+  };
 
-    return (
-      <div className="App">
+  const login = () => {
+    Axios.post('http://localhost:3001/login', {
+      username: username,
+      password: password,
+    }).then((response) => {
+      if (!response.data.auth) {
+        setLoginSuccess('Login failed.')
+      } else {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', response.data.user);
+        localStorage.setItem('userid', response.data.userid);
+        setLoginSuccess('');
+        navigate('/employeespage', {state: {token: localStorage.getItem('token'), auth: true}});
+      }
+    })
+  };
+
+  const loginKeyboard = (e) => {
+    if (e.key === 'Enter') {
+      login();
+    }
+  }
+
+  return (
+    <div className='App' style={{
+      minHeight: '42.9em',
+      marginRight: '-1px',
+      display: 'flex',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      flexGrow: 1
+    }}>
+      <div className='logo'>
+        <img src={MyImage} alt='logo'/>
+      </div>
+      <div className='registrationlogin'>
         <div className="registration">
           <h3>Registration</h3>
           <TextField
@@ -98,13 +99,16 @@ export default function Authenticate() {
           <p style={{fontFamily: 'verdana', color: 'red', margin: '4px'}}>
             {regirstrationSuccess}
           </p>
-          <Button
-            variant='contained'
-            color='action'
-            onClick={() => register()}
-          >
-            REGISTER
-          </Button>
+          <ThemeProvider theme={theme}>
+            <Button
+              variant='contained'
+              color='beige'
+              sx={{ color: 'rgb(243, 240, 230)' }}
+              onClick={() => register()}
+            >
+              REGISTER
+            </Button>
+          </ThemeProvider>
         </div>
         <div className="login">
           <h3>Login</h3>
@@ -128,20 +132,18 @@ export default function Authenticate() {
           <p style={{fontFamily: 'verdana', color: 'red', margin: '4px'}}>
             {loginSuccess}
           </p>
+          <ThemeProvider theme={theme}>
+            <Button
+              variant='contained'
+              color='beige'
+              sx={{ color: 'rgb(243, 240, 230)' }}
+              onClick={() => login()}
+            >
+              LOGIN
+            </Button>
+          </ThemeProvider> 
         </div>
-        <Button
-          variant='contained'
-          color='success'
-          onClick={() => login()}
-        >
-          LOGIN
-        </Button>
       </div>
-    );
+    </div>
+  );
 }
-
-/*
-
-
-
-*/

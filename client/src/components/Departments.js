@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import Axios from 'axios';
-import { Button, TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { TextField } from '@mui/material';
 import EditSharp from '@mui/icons-material/EditSharp';
 import DeleteSharp from '@mui/icons-material/DeleteSharp';
 import SaveSharp from '@mui/icons-material/SaveSharp';
 import CancelSharp from '@mui/icons-material/CancelSharp';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
+import Axios from 'axios';
 import './../App.css';
 import 'react-notifications/lib/notifications.css';
 
-//kokeile importtaa kaikki kerrallaan
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -17,21 +17,18 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-import { NotificationContainer, NotificationManager } from 'react-notifications';
-
 export default function Departments({ userIdProps, updateDepartmentsProps }) {
   const [departments, setDepartments] = useState({});
   const [departmentName, setDepartmentName] = useState('');
   const [departmentField, setDepartmentField] = useState('');
 
-  const [updateDepartmentsDelete, setUpdateDepartmentsDelete] = useState(false);
+  const [updateDepartments, setUpdateDepartments] = useState(false);
   const [updateOnOff, setUpdateOnOff] = useState(false);
   const [updateDepartmentId, setUpdateDepartmentId] = useState();
 
   // Get departments
   useEffect(() => {
     Axios.get('http://localhost:3001/getdepartments', { params: { userId: userIdProps } }).then((response) => {
-      //console.log('useEffect departments-data on : ' + response.data);
       setDepartments(response.data);
     })
   }, [])
@@ -41,38 +38,29 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
     Axios.get('http://localhost:3001/getdepartments', { params: { userId: userIdProps } }).then((response) => {
       setDepartments(response.data);
     })
-  }, [updateDepartmentsProps, userIdProps, updateDepartmentsDelete]) // tarvitseeko userId? jos tarvitsee, muuta muutkin useEffectit
+  }, [updateDepartmentsProps, userIdProps, updateDepartments])
 
   const deleteDepartment = (id) => {
       Axios.post('http://localhost:3001/deletedepartment', {
         userid: userIdProps,
         departmentid: id
       }).then(function (response) {
-        //console.log(response.data.errno);
         if (response.data.errno === 1451) {
-          return ( // onko return tarpeen?
             NotificationManager.error('Please remove all employees from the department before deleting.', 'Error', 6000)
-          )
         }
-      }).catch(function (error) {
-        console.log(error);
       })
-      if (!updateDepartmentsDelete) {
-        setUpdateDepartmentsDelete(true);
+      
+      if (!updateDepartments) {
+        setUpdateDepartments(true);
       } else {
-        setUpdateDepartmentsDelete(false);
+        setUpdateDepartments(false);
       }
   }
 
   const updateDepartmentToDatabase = (id, department) => {
-    // VIIMEISTELE, muuta muuttujanimiä
-
     if (departments.find(department => department.name === departmentName) === undefined) {
-      // TODO: kokeile laittaa muuttujat yhteen riviin
-      let departmentname;
-      let departmentfield;
+      let departmentname, departmentfield;
 
-      // TODO: selvitä voiko else-haaran tehdä tyhjäksi
       departmentName === '' ? departmentname = department.name : departmentname = departmentName;
       departmentField === '' ? departmentfield = department.field : departmentfield = departmentField;
       console.log('departmentname on: ' + departmentname);
@@ -89,17 +77,18 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
       setDepartmentField('');
 
       setUpdateOnOff(false);
-      if (!updateDepartmentsDelete) {
-        setUpdateDepartmentsDelete(true); // muuta nimi
+
+      if (!updateDepartments) {
+        setUpdateDepartments(true);
       } else {
-        setUpdateDepartmentsDelete(false);
+        setUpdateDepartments(false);
       }
     } else {
       NotificationManager.error('Department name is already in use!');
     }
   }
 
-  const updateDepartmentOnOff = (id) => { // nimeä uudelleen
+  const updateDepartmentOnOff = (id) => {
     setUpdateDepartmentId(id);
     if (!updateOnOff) {
       setUpdateOnOff(true);
@@ -108,7 +97,7 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
     }
   }
 
-  const updateDepartmentIdFunction = (id) => { // muuta nimi
+  const updateDepartmentIdFunction = (id) => {
     if (id === updateDepartmentId) {
       return true;
     } else {
@@ -118,21 +107,22 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
 
   return (
     <div className='employeesanddepartments'>
-      <h4>Departments</h4>
       <TableContainer
         component={Paper}
-        sx={{ height: '35em' }}
+        sx={{ height: '36.4em', background: 'rgb(249, 247, 244)' }}
       >
         <Table
           sx={{ minWidth: 650 }}
           stickyHeader
-          arial-label='simple table'
-          size="small"
+          arial-label='departments table'
+          size='small'
         >
           <TableHead>
             <TableRow>
-              <TableCell align='left'>Name</TableCell>
-              <TableCell align='left'>Field</TableCell>
+              <TableCell align='left' sx={{ backgroundColor: 'rgb(235, 229, 216)' }}>Name</TableCell>
+              <TableCell align='left' sx={{ backgroundColor: 'rgb(235, 229, 216)' }}>Field</TableCell>
+              <TableCell align='left' sx={{ backgroundColor: 'rgb(235, 229, 216)' }}></TableCell>
+              <TableCell align='left' sx={{ backgroundColor: 'rgb(235, 229, 216)' }}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -149,6 +139,7 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
                       placeholder='Name'
                       defaultValue={department.name}
                       onChange={e => setDepartmentName(e.target.value)}
+                      sx={{ width: '80%', bgcolor: 'white' }}
                       size='small'
                       inputProps={{ maxLength: 30 }}
                     />
@@ -159,23 +150,21 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
                       placeholder='Field'
                       defaultValue={department.field}
                       onChange={e => setDepartmentField(e.target.value)}
+                      sx={{ width: '80%', bgcolor: 'white' }}
                       size='small'
                       inputProps={{ maxLength: 30 }}
                     />
                   </TableCell>
-                  <TableCell>
+                  <TableCell width='5%'>
                     <SaveSharp
-                      color='success'
+                      sx={{ color: 'rgb(80, 141, 34)' }}
                       fontSize='large'
                       onClick={() => updateDepartmentToDatabase(department.departmentId, departments[key])}
                     />
-                    {/*<Button onClick={() =>
-                      UpdateDepartmentToDatabase(department.departmentId, departments[key])}
-                    >UPDATE</Button>*/}
                   </TableCell>
-                  <TableCell>
+                  <TableCell width='5%'>
                     <CancelSharp
-                      color='action'
+                      sx={{ color: 'rgb(134, 133, 114)', marginTop: '6px' }}
                       fontSize='large'
                       onClick={() => setUpdateOnOff(false)}
                     />
@@ -188,21 +177,19 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
                   >
                     <TableCell component='th' scope='row'>{department.name}</TableCell>
                     <TableCell>{department.field}</TableCell>
-                    <TableCell>
+                    <TableCell width='5%'>
                       <EditSharp
-                        color='action'
+                        sx={{ color: 'rgb(181, 150, 65)' }}
                         fontSize='large'
                         onClick={() => updateDepartmentOnOff(department.departmentId)}
                       />
-                      {/*<Button onClick={() => updateDepartmentOnOff(department.departmentId)}>UPDATE</Button>*/}
                     </TableCell>
-                    <TableCell>
+                    <TableCell width='5%'>
                       <DeleteSharp
-                        color='warning'
+                        sx={{ color: 'rgb(226, 108, 34)' }}
                         fontSize='large'
                         onClick={() => deleteDepartment(department.departmentId)}
                       />
-                      {/*<Button onClick={() => deleteDepartment(department.departmentId)}>DELETE</Button>*/}
                     </TableCell>
                   </TableRow>
             ))}
@@ -213,16 +200,3 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
     </div>
   )
 }
-
-
-/*
-
-                    <TableCell>
-                      {updateOnOff ? 'update ON' : 'update OFF'}
-                    </TableCell>
-
-
-
-
-
-*/

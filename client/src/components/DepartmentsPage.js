@@ -1,15 +1,15 @@
-import React, {useState, useEffect } from "react"; //usestate/useeffect samaan
-import { BrowserRouter, useNavigate } from "react-router-dom";
-import Axios from 'axios';
-import { TextField } from "@mui/material";
-import { Button } from "@mui/material"
+import React, {useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { TextField } from '@mui/material';
+import { Button } from '@mui/material';
 import SettingsSharp from '@mui/icons-material/SettingsSharp';
 import ExitToAppSharpIcon from '@mui/icons-material/ExitToAppSharp';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
+import Axios from 'axios';
 import '../App.css';
 
-import Departments from "./Departments";
-
-import { NotificationContainer, NotificationManager } from 'react-notifications';
+import Departments from './Departments';
 
 export default function DepartmentsPage() {
   const [userId, setUserId] = useState(localStorage.getItem('userid'));
@@ -19,20 +19,24 @@ export default function DepartmentsPage() {
 
   const [updateDepartments, setUpdateDepartments] = useState(false);
 
-  const [isAuth, setIsAuth] = useState(false);
-
   const navigate = useNavigate();
+
+  const theme = createTheme({
+    palette: {
+      beige: {
+        main: 'rgb(144, 119, 53)',
+        dark: 'rgb(98, 77, 19)',
+      },
+    },
+  });
 
   if (localStorage.getItem('token') === '') {
     navigate('/');
-  } else {
-    //console.log('loggaus onnistu');
   }
 
   //Get departments
   useEffect(() => {
     Axios.get('http://localhost:3001/getdepartments', { params: { userId: userId } }).then((response) => {
-      //console.log('useEffect departments-data on : ' + response.data);
       setDepartments(response.data);
     })
   }, [])
@@ -42,41 +46,35 @@ export default function DepartmentsPage() {
     Axios.get('http://localhost:3001/getdepartments', { params: { userId: userId } }).then((response) => {
       setDepartments(response.data);
     })
-  }, [updateDepartments, userId]) // tarvitseeko userId?
+  }, [updateDepartments, userId])
 
   const addDepartmentToDatabase = () => {
-    console.log('(addDepartmentToDatabase) userId on: ' + userId + ' name on: ' + departmentName + ' field on: ' + departmentField);
+    Axios.post('http://localhost:3001/adddepartment', {
+      userId: userId,
+      name: departmentName,
+      field: departmentField
+    })
 
-    if (departments.find(department => department.name === departmentName) === undefined) {
-      Axios.post('http://localhost:3001/adddepartment', {
-        userId: userId,
-        name: departmentName,
-        field: departmentField
-      })
-      
-      if (!updateDepartments) {
-        setUpdateDepartments(true);
-      } else {
-        setUpdateDepartments(false);
-      }
-      setDepartmentName('');
-      setDepartmentField('');
-
+    if (!updateDepartments) {
+      setUpdateDepartments(true);
     } else {
-      NotificationManager.error('Department name is already in use!');
-      console.log('NIMI ON JO KÄYTÖSSÄ!');
+      setUpdateDepartments(false);
     }
+    
+    setDepartmentName('');
+    setDepartmentField('');
   }
 
   const addDepartment = () => {
     return (
-      <div>
+      <div className='adddepartment'>
         <TextField
           id='departmentname'
           placeholder='Name'
           value={departmentName}
           onChange={e => setDepartmentName(e.target.value)}
           size='small'
+          sx={{ width: '50%', bgcolor: 'white' }}
           inputProps={{ maxLength: 30 }}
         />
         <TextField
@@ -85,22 +83,25 @@ export default function DepartmentsPage() {
           value={departmentField}
           onChange={e => setDepartmentField(e.target.value)}
           size='small'
+          sx={{ width: '50%', bgcolor: 'white' }}
           inputProps={{ maxLength: 30 }}
         />
-        <Button
-          variant='contained'
-          color='success'
-          onClick={() => addDepartmentToDatabase()}
-        >
-        ADD DEPARTMENT
-        </Button>
+        <ThemeProvider theme={theme}>
+          <Button
+            variant='contained'
+            color='beige'
+            sx={{ color: 'rgb(243, 240, 230)', width: '15%'}}
+            onClick={() => addDepartmentToDatabase()}
+          >
+            ADD
+          </Button>
+        </ThemeProvider>
       </div>
     )
   }
 
   const logout = () => {
     localStorage.setItem('token', '');
-    //console.log('Dashboardissa asetettu localStorage on: ' + localStorage.getItem('token'));
     navigate('/');
   }
 
@@ -112,20 +113,17 @@ export default function DepartmentsPage() {
     <div>
       <div className="logoutsettings">
         <SettingsSharp
-          color='primary'
+          sx={{ color: 'rgb(124, 101, 38)', paddingRight: 2 }}
           fontSize='medium'
-          sx={{ paddingRight: 2 }}
           onClick={() => settings()}
         />
         <ExitToAppSharpIcon
-          color='secondary'
+          sx={{ color: 'rgb(124, 101, 38)' }}
           fontSize='medium'
           onClick={() => logout()}
         />
-        {/*<button onClick={() => Settings()}>SETTINGS</button>
-        <button onClick={() => logout()}>LOGOUT</button><br />*/}
       </div>
-      <div>
+      <div style={{ marginTop: '43px' }}>
         <Departments userIdProps={userId} updateDepartmentsProps={updateDepartments} />
       </div>
       {addDepartment()}

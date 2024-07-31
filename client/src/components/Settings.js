@@ -1,11 +1,9 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { BrowserRouter, useNavigate } from "react-router-dom";
-import { Button } from "@mui/material"
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@mui/material';
 import Axios from 'axios';
 import '../App.css';
 
-// TODO: kokeile importtaa kaikki kerrallaan
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -15,13 +13,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 export default function Settings() {
   const [userId, setUserId] = useState(localStorage.getItem('userid'));
   
-  const [open, setOpen] = useState(false); // muuta nimi?
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  const [isAuth, setIsAuth] = useState(false);
   const navigate = useNavigate();
 
   const deleteAccount = () => {
-    console.log('DeleteAccount userId on: ' + userId);
     Axios.post('http://localhost:3001/deleteallemployees', {
       userid: userId
     })
@@ -41,21 +37,32 @@ export default function Settings() {
     navigate(-1);
   }
 
-  // laita handleClickOpen ja handleClickClose samaan funktioon
-  const handleClickOpen = () => {
-    setOpen(true);
-  }
-
-  const handleClickClose = () => {
-    setOpen(false);
+  const handleClick = (action) => {
+    if (action === 'open') {
+      setDialogOpen(true);
+    }
+    if (action === 'close') {
+      setDialogOpen(false);
+    }
   }
 
   return (
-    <div>
-      <Button onClick={handleClickOpen}>DELETE ACCOUNT</Button><br />
+    <div style={{ height: '39.5em' }}>
+      <Button
+        onClick={() => goBack()}
+        sx={{ color: 'rgb(124, 101, 38)' }}
+      >
+        Go Back
+      </Button><br />
+      <Button
+        onClick={() => handleClick('open')}
+        sx={{ color: 'red' }}
+      >
+        DELETE ACCOUNT
+      </Button>
       <Dialog
-        open={open}
-        onClose={handleClickClose}
+        open={dialogOpen}
+        onClose={() => handleClick('close')}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -68,11 +75,10 @@ export default function Settings() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClickClose}>Don't delete</Button>
+          <Button onClick={() => handleClick('close')}>Don't delete</Button>
           <Button onClick={deleteAccount} autoFocus sx={{ color: 'red' }}>DELETE</Button>
         </DialogActions>
       </Dialog>
-      <Button onClick={() => goBack()}>Go Back</Button>
     </div>
   )
 }

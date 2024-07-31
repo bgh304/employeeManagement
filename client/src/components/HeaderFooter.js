@@ -1,7 +1,5 @@
-import React from "react";
+import React from 'react';
 import './../App.css';
-
-//inline css App.css:ään. (flexbox?)
 
 export default function HeaderFooter(props) {
   if (props.props === 'header') {
@@ -11,7 +9,6 @@ export default function HeaderFooter(props) {
           left: 0,
           top: 0,
           right: 0,
-          height: '6%',
         }}
       >
         <p>SIMPLE EMPLOYEE MANAGEMENT SYSTEM</p>
@@ -26,7 +23,6 @@ export default function HeaderFooter(props) {
           left: 0,
           bottom: 0,
           right: 0,
-          height: '6%'
         }}
       >
         <p />
@@ -34,11 +30,3 @@ export default function HeaderFooter(props) {
     )
   }
 }
-
-
-/*
-
-
-
-
-*/
