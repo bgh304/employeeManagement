@@ -8,9 +8,10 @@
   margin: -10px;
 }
 
-.logo {
-  align-items: bottom;
-  border: 2px;
+.logo > img{
+  max-width: 100%;
+  height: auto;
+  width: auto;
 }
 
 .registrationlogin {
@@ -35,19 +36,17 @@
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-input {
-  width: 250px;
-  height: 40px;
-}
-
 .header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
   background-color: rgb(232, 202, 120);
   font-size: 25px;
   min-height: 40px;
 }
 
 .header > p {
-  margin: 3px;
+  margin: 4px;
   padding: 7px;
   text-align: left;
   font-family: Arial, Helvetica, sans-serif;
@@ -56,6 +55,14 @@ input {
   font-size: 15px;
   letter-spacing: -1px;
   opacity: 0.85;
+}
+
+.header > p:nth-child(2) {
+  text-align: right;
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: 0px;
 }
 
 .footer {
@@ -69,11 +76,24 @@ input {
 }
 
 .logoutsettings {
+  display: flex;
+  justify-content: right;
+  gap: 10px;
   text-align: right;
   margin-top: -40px;
-  margin-bottom: -40px;
+  margin-bottom: -42px;
   padding-top: 9px;
   margin-right: 1%;
+}
+
+.logoutsettings > div {
+  border-radius: 20%;
+  margin-top: -3px;
+  margin-bottom: 3px;
+}
+
+.logoutsettings > div:hover {
+  background-color: rgb(215, 209, 198);
 }
 
 .addemployee {

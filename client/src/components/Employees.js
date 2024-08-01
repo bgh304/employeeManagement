@@ -22,6 +22,8 @@ import DeleteSharp from '@mui/icons-material/DeleteSharp';
 import SaveSharp from '@mui/icons-material/SaveSharp';
 import CancelSharp from '@mui/icons-material/CancelSharp';
 
+// 'userIdProps': specifies which user's data is handled.
+// 'updateEmployeesProps': sent from EmployeesPage component. Used to trigger employees table re-render.
 export default function Employees({ userIdProps, updateEmployeesProps }) {
   const [departments, setDepartments] = useState({});
   const [employees, setEmployees] = useState({});
@@ -34,6 +36,7 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
   const [salary, setSalary] = useState('');
   const [startingDate, setStartingDate] = useState('');
 
+  // States for rendering new/updated data
   const [updateEmployees, setUpdateEmployees] = useState(false);
   const [updateOnOff, setUpdateOnOff] = useState(false);
   const [updateEmployeeId, setUpdateEmployeeId] = useState();
@@ -69,8 +72,6 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
   }
 
   const updateEmployeeToDatabase = (id, employee) => {
-    // TODO: ota mukaan koodin dokumentointiin: EMPLOYEE.LASTNAME JNE. ON VANHAA DATAA
-
     let firstname, lastname, jobtitle, departmentid, employeeseniority, employeesalary, startingdate;
 
     firstName === '' ? firstname = employee.firstName : firstname = firstName;
@@ -109,6 +110,7 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
     }
   }
 
+  // Changes table's data row into editing mode
   const updateEmployeeOnOff = (id) => {
     setUpdateEmployeeId(id);
     if (!updateOnOff) {
@@ -118,6 +120,7 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
     }
   }
   
+  // Returns single department's name. Used for employees table row.
   const getDepartmentName = (id) => {
     let departmentNames = [];
     let departmentName;
@@ -139,6 +142,7 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
     )
   }
 
+  // Used to specify which table row is to be edited. Returns 'true' for employee to be edited (based on it's ID).
   const updateEmployeeIdFunction = (id) => {
     if (id === updateEmployeeId) {
       return true;
@@ -147,8 +151,8 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
     }
   }
 
+  // Menu to select departments
   const departmentsBox = (departmentsProps, id) => {
-    // VIIMEISTELE
     const departmentNames = [];
     const departmentIds = [];
 
@@ -199,6 +203,10 @@ export default function Employees({ userIdProps, updateEmployeesProps }) {
               </TableRow>
             </TableHead>
             <TableBody>
+            {/*
+              Mapping employees into the table.
+              If 'updateOnOff' and 'updateEmployeeIdFunction' are both 'true', row is rendered in editing mode.
+            */}
               {Object.entries(employees).map(([key, employee]) => (
                 updateOnOff && updateEmployeeIdFunction(employee.employeeId)
                   ?

@@ -72,7 +72,6 @@ export default function Authenticate() {
       display: 'flex',
       justifyContent: 'space-around',
       alignItems: 'center',
-      flexGrow: 1
     }}>
       <div className='logo'>
         <img src={MyImage} alt='logo'/>

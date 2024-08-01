@@ -17,14 +17,17 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+// 'userIdProps': specifies which user's data is handled.
+// 'updateDepartmentsProps': sent from DepartmentsPage component. Used to trigger departments table re-render.
 export default function Departments({ userIdProps, updateDepartmentsProps }) {
   const [departments, setDepartments] = useState({});
   const [departmentName, setDepartmentName] = useState('');
   const [departmentField, setDepartmentField] = useState('');
 
-  const [updateDepartments, setUpdateDepartments] = useState(false);
-  const [updateOnOff, setUpdateOnOff] = useState(false);
-  const [updateDepartmentId, setUpdateDepartmentId] = useState();
+  // States for rendering new/updated data
+  const [updateDepartments, setUpdateDepartments] = useState(false); // Changed to re-render departments table
+  const [updateOnOff, setUpdateOnOff] = useState(false); // Changed to edit single department table row
+  const [updateDepartmentId, setUpdateDepartmentId] = useState(); // Used to specify which table row is to be edited
 
   // Get departments
   useEffect(() => {
@@ -33,7 +36,7 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
     })
   }, [])
 
-  //Update departments table
+  // Update departments table
   useEffect(() => {
     Axios.get('http://localhost:3001/getdepartments', { params: { userId: userIdProps } }).then((response) => {
       setDepartments(response.data);
@@ -58,36 +61,31 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
   }
 
   const updateDepartmentToDatabase = (id, department) => {
-    if (departments.find(department => department.name === departmentName) === undefined) {
-      let departmentname, departmentfield;
+    let departmentname, departmentfield;
 
-      departmentName === '' ? departmentname = department.name : departmentname = departmentName;
-      departmentField === '' ? departmentfield = department.field : departmentfield = departmentField;
-      console.log('departmentname on: ' + departmentname);
-      console.log('departmentfield on: ' + departmentfield);
+    departmentName === '' ? departmentname = department.name : departmentname = departmentName;
+    departmentField === '' ? departmentfield = department.field : departmentfield = departmentField;
 
-      Axios.put('http://localhost:3001/updatedepartment', {
-        userid: userIdProps,
-        departmentid: id,
-        departmentname: departmentname,
-        departmentfield: departmentfield
-      })
+    Axios.put('http://localhost:3001/updatedepartment', {
+      userid: userIdProps,
+      departmentid: id,
+      departmentname: departmentname,
+      departmentfield: departmentfield
+    })
 
-      setDepartmentName('');
-      setDepartmentField('');
+    setDepartmentName('');
+    setDepartmentField('');
 
-      setUpdateOnOff(false);
+    setUpdateOnOff(false);
 
-      if (!updateDepartments) {
-        setUpdateDepartments(true);
-      } else {
-        setUpdateDepartments(false);
-      }
+    if (!updateDepartments) {
+      setUpdateDepartments(true);
     } else {
-      NotificationManager.error('Department name is already in use!');
+      setUpdateDepartments(false);
     }
   }
 
+  // Changes table's data row into editing mode
   const updateDepartmentOnOff = (id) => {
     setUpdateDepartmentId(id);
     if (!updateOnOff) {
@@ -97,6 +95,7 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
     }
   }
 
+  // Used to specify which table row is to be edited. Returns 'true' for department to be edited (based on it's ID).
   const updateDepartmentIdFunction = (id) => {
     if (id === updateDepartmentId) {
       return true;
@@ -126,8 +125,12 @@ export default function Departments({ userIdProps, updateDepartmentsProps }) {
             </TableRow>
           </TableHead>
           <TableBody>
+            {/*
+              Mapping departments into the table.
+              If 'updateOnOff' and 'updateDepartmentIdFunction' are both 'true', row is rendered in editing mode.
+            */}
             {Object.entries(departments).map(([key, department]) => (
-              updateOnOff && updateDepartmentIdFunction(department.departmentId)
+              updateOnOff && updateDepartmentIdFunction(department.departmentId) 
                 ?
                   <TableRow
                     key={key}

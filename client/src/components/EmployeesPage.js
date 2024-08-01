@@ -26,10 +26,9 @@ export default function EmployeesPage() {
   const [salary, setSalary] = useState('');
   const [startingDate, setStartingDate] = useState('');
 
-  const [departments, setDepartments] = useState({});
+  const [departments, setDepartments] = useState({}); // Departments data for DepartmentsBox function
 
-  const [updateEmployees, setUpdateEmployees] = useState(false);
-  const [updateDepartments, setUpdateDepartments] = useState(0);
+  const [updateEmployees, setUpdateEmployees] = useState(false); // Changed to re-render Employee component's employees table
 
   const navigate = useNavigate();
 
@@ -46,27 +45,14 @@ export default function EmployeesPage() {
     navigate('/');
   }
 
-  // Get Departments
+  // Get Departments (for DepartmentsBox function)
   useEffect(() => {
     Axios.get('http://localhost:3001/getdepartments', { params: { userId: userId } }).then((response) => {
       setDepartments(response.data);
     })
   }, [])
 
-  // Update departments table
-  useEffect(() => {
-    Axios.get('http://localhost:3001/getdepartments', { params: { userId: userId } }).then((response) => {
-      setDepartments(response.data);
-    })
-  }, [updateDepartments, userId])
-
   const addEmployeeToDatabase = () => {
-    let departmentNames = [];
-
-    Object.entries(departments).map(([key, department]) => (
-      departmentNames.push(department.name.toString())
-    ))
-
     Axios.post('http://localhost:3001/addemployee', {
       userId: userId,
       firstName: firstName,
@@ -92,6 +78,7 @@ export default function EmployeesPage() {
     setSalary('');
   }
 
+  // Menu to select departments
   const departmentsBox = (departmentsProps) => {
     const departmentNames = [];
     const departmentIds = [];
@@ -173,7 +160,6 @@ export default function EmployeesPage() {
           sx={{ bgcolor: 'white' }}
           size='small'
         />
-
         <LocalizationProvider dateAdapter={AdapterDayjs} size='small'>
           <DatePicker
             id='startingdate'
@@ -209,18 +195,23 @@ export default function EmployeesPage() {
   return (
     <div>
       <div className="logoutsettings">
-        <SettingsSharp
-          sx={{ color: 'rgb(124, 101, 38)', paddingRight: 2 }}
-          fontSize='medium'
-          onClick={() => settings()}
-        />
-        <ExitToAppSharpIcon
-          sx={{ color: 'rgb(124, 101, 38)' }}
-          fontSize='medium'
-          onClick={() => logout()}
-        />
+        <div>
+          <SettingsSharp
+            sx={{ color: 'rgb(124, 101, 38)', marginTop: '2px' }}
+            fontSize='medium'
+            onClick={() => settings()}
+          />
+        </div>
+        <div>
+          <ExitToAppSharpIcon
+            sx={{ color: 'rgb(124, 101, 38)', marginTop: '2px'}}
+            fontSize='medium'
+            onClick={() => logout()}
+          />
+        </div>
       </div>
       <div style={{ marginTop: '43px' }}>
+        {/*'updateEmployees' is sent to Employees component to re-render employees table.*/}
         <Employees userIdProps={userId} updateEmployeesProps={updateEmployees} />
       </div>
       <div>

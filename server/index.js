@@ -57,6 +57,7 @@ const db = mysql.createConnection({
   database: 'employeemanagement', 
 });
 
+// REGISTRATION AND LOGIN
 app.post('/register', (req, res)=> {
   const username = req.body.username;
   const password = req.body.password; 
@@ -135,6 +136,7 @@ app.post('/login', (req, res) => {
   );
 });
 
+// EMPLOYEE -AND DEPARTMENT CRUD FUNCTIONALITIES
 app.post('/addemployee', (req, res) => {
   const userId = req.body.userId;
   const firstName = req.body.firstName;
@@ -293,6 +295,7 @@ app.post('/deletealldepartments', (req, res) => {
   })
 })
 
+// DELETE USER ACCOUNT
 app.post('/deleteaccount', (req, res) => {
   const userId = req.body.userid;
 

@@ -12,6 +12,7 @@ export default function HeaderFooter(props) {
         }}
       >
         <p>SIMPLE EMPLOYEE MANAGEMENT SYSTEM</p>
+        <p>You might need to refresh the page if data is not shown.</p>
       </div>
     )
   }

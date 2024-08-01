@@ -1,11 +1,11 @@
-import React, {useState, useEffect } from 'react';
+import React, {useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField } from '@mui/material';
 import { Button } from '@mui/material';
 import SettingsSharp from '@mui/icons-material/SettingsSharp';
 import ExitToAppSharpIcon from '@mui/icons-material/ExitToAppSharp';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { NotificationContainer, NotificationManager } from 'react-notifications';
+import { NotificationContainer } from 'react-notifications';
 import Axios from 'axios';
 import '../App.css';
 
@@ -15,9 +15,8 @@ export default function DepartmentsPage() {
   const [userId, setUserId] = useState(localStorage.getItem('userid'));
   const [departmentName, setDepartmentName] = useState('');
   const [departmentField, setDepartmentField] = useState('');
-  const [departments, setDepartments] = useState({});
 
-  const [updateDepartments, setUpdateDepartments] = useState(false);
+  const [updateDepartments, setUpdateDepartments] = useState(false); // Changed to re-render Departments component's departments table
 
   const navigate = useNavigate();
 
@@ -33,20 +32,6 @@ export default function DepartmentsPage() {
   if (localStorage.getItem('token') === '') {
     navigate('/');
   }
-
-  //Get departments
-  useEffect(() => {
-    Axios.get('http://localhost:3001/getdepartments', { params: { userId: userId } }).then((response) => {
-      setDepartments(response.data);
-    })
-  }, [])
-
-  //Update departments table
-  useEffect(() => {
-    Axios.get('http://localhost:3001/getdepartments', { params: { userId: userId } }).then((response) => {
-      setDepartments(response.data);
-    })
-  }, [updateDepartments, userId])
 
   const addDepartmentToDatabase = () => {
     Axios.post('http://localhost:3001/adddepartment', {
@@ -112,18 +97,23 @@ export default function DepartmentsPage() {
   return (
     <div>
       <div className="logoutsettings">
-        <SettingsSharp
-          sx={{ color: 'rgb(124, 101, 38)', paddingRight: 2 }}
-          fontSize='medium'
-          onClick={() => settings()}
-        />
-        <ExitToAppSharpIcon
-          sx={{ color: 'rgb(124, 101, 38)' }}
-          fontSize='medium'
-          onClick={() => logout()}
-        />
+        <div>
+          <SettingsSharp
+            sx={{ color: 'rgb(124, 101, 38)', marginTop: '2px' }}
+            fontSize='medium'
+            onClick={() => settings()}
+          />
+        </div>
+        <div>
+          <ExitToAppSharpIcon
+            sx={{ color: 'rgb(124, 101, 38)', marginTop: '2px'}}
+            fontSize='medium'
+            onClick={() => logout()}
+          />
+        </div>
       </div>
       <div style={{ marginTop: '43px' }}>
+        {/*'updateDepartments' is sent to Departments component to re-render departments table.*/}
         <Departments userIdProps={userId} updateDepartmentsProps={updateDepartments} />
       </div>
       {addDepartment()}
