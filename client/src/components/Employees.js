@@ -22,7 +22,7 @@ import DeleteSharp from '@mui/icons-material/DeleteSharp';
 import SaveSharp from '@mui/icons-material/SaveSharp';
 import CancelSharp from '@mui/icons-material/CancelSharp';
 
-// 'userIdProps': specifies which user's data is handled.
+// 'userIdProps': sent from EmployeesPage component. Specifies which user's data is handled.
 // 'updateEmployeesProps': sent from EmployeesPage component. Used to trigger employees table re-render.
 export default function Employees({ userIdProps, updateEmployeesProps }) {
   const [departments, setDepartments] = useState({});

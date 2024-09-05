@@ -17,7 +17,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-// 'userIdProps': specifies which user's data is handled.
+// 'userIdProps': sent from DepartmentsPage component. Specifies which user's data is handled.
 // 'updateDepartmentsProps': sent from DepartmentsPage component. Used to trigger departments table re-render.
 export default function Departments({ userIdProps, updateDepartmentsProps }) {
   const [departments, setDepartments] = useState({});

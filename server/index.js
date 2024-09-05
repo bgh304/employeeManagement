@@ -1,3 +1,51 @@
+/*
+BACKEND SETUP (index.js):
+
+At line 92 (app.use) change the session secret.
+At line 104-105 (mysql.createConnection) change 'password' and 'database' to ones you're using.
+
+
+SQL STATEMENTS TO CREATE DATABASE TABLES:
+
+CREATE TABLE `users` (
+  `userId` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(30) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  PRIMARY KEY (`userId`),
+  UNIQUE KEY `userId_UNIQUE` (`userId`)
+);
+
+CREATE TABLE `departments` (
+  `departmentId` int NOT NULL AUTO_INCREMENT,
+  `userId` int NOT NULL,
+  `name` varchar(30) NOT NULL,
+  `field` varchar(30) NOT NULL,
+  PRIMARY KEY (`departmentId`),
+  UNIQUE KEY `departmentId_UNIQUE` (`departmentId`),
+  KEY `user_idx` (`userId`),
+  CONSTRAINT `userDepartment` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`)
+);
+
+CREATE TABLE `employees` (
+  `employeeId` int NOT NULL AUTO_INCREMENT,
+  `userId` int NOT NULL,
+  `firstName` varchar(20) NOT NULL,
+  `lastName` varchar(20) NOT NULL,
+  `jobTitle` varchar(20) NOT NULL,
+  `departmentId` int DEFAULT NULL,
+  `seniority` varchar(20) NOT NULL,
+  `salary` int NOT NULL,
+  `startingDate` date NOT NULL,
+  PRIMARY KEY (`employeeId`),
+  UNIQUE KEY `ID_UNIQUE` (`employeeId`),
+  KEY `department_idx` (`departmentId`),
+  KEY `user_idx` (`userId`),
+  CONSTRAINT `department` FOREIGN KEY (`departmentId`) REFERENCES `departments` (`departmentId`),
+  CONSTRAINT `userEmployee` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`)
+);
+*/
+
+
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
@@ -41,7 +89,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use (
   session ({
     key: 'userId',
-    secret: 'subscribe', //MUUTA
+    secret: '', // change
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -53,8 +101,8 @@ app.use (
 const db = mysql.createConnection({
   user: 'root',
   host: 'localhost',
-  password: 'salasana',
-  database: 'employeemanagement', 
+  password: '', // write your password here
+  database: '', // write your database's name here
 });
 
 // REGISTRATION AND LOGIN

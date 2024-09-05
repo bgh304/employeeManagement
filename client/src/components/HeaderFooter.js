@@ -26,7 +26,9 @@ export default function HeaderFooter(props) {
           right: 0,
         }}
       >
-        <p />
+        <p>
+          <a href="https://github.com/bgh304/employeeManagement" target="_blank" rel="noreferrer">GitHub</a>
+        </p>
       </div>
     )
   }
