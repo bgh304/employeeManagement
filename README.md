@@ -91,7 +91,8 @@ DepartmentsPage.js and EmployeesPage.js shows data tables, has functionality to 
 ### Departments.js / Employees.js
 ```userIdProps``` props for 'Departments'' and 'Employees'' main functions: sent from DepartmentsPage/EmployeesPage component, and specifies which user's data is handled.
 
-**Updating and re-rendering data**
+**UPDATING AND RE-RENDERING DATA**
+
 Both components have same way to update and re-render data. They have same kind of props for main function, states and functions.
 
 To switch table row into editing mode, ```updateOnOff``` state needs to be ```true``` and ```updateDepartmentIdFunction``` needs to return ```true```.
