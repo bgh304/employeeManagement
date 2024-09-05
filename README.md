@@ -96,6 +96,7 @@ Both components have same way to update and re-render data. They have same kind 
 
 To switch table row into editing mode, ```updateOnOff``` state needs to be ```true``` and ```updateDepartmentIdFunction``` needs to return ```true```.
 
+
 **Props**
 
 ```updateDepartmentsProps```/```updateEmployeesProps``` props for the main functions: sent from DepartmentsPage/EmployeesPage component when new data is added to database. Required to be ```true``` to re-render table for latest data.
