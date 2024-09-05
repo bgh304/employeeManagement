@@ -11,7 +11,7 @@ Fullstack browser application with basic CRUD-functionalities and user registrat
 - HTML/CSS
 
 ## SQL setup
-Rum following SQL create statements for the database:
+Run following SQL create statements for the database:
 ```
 CREATE TABLE `users` (
   `userId` int NOT NULL AUTO_INCREMENT,
@@ -50,6 +50,36 @@ CREATE TABLE `employees` (
   CONSTRAINT `userEmployee` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`)
 );
 ```
+
+## Backend setup (index.js) for local environment
+In ```app.use``` change the session secret:
+```
+app.use (
+  session ({
+    key: 'userId',
+    secret: '', //change
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        expires: 60 * 60 * 24,
+    },
+  })
+);
+```
+
+In ```mysql.createConnection``` change 'password' and 'database' to one's you're using:
+```
+const db = mysql.createConnection({
+  user: 'root',
+  host: 'localhost',
+  password: '', //write your password here
+  database: '', //write your database's name here
+});
+```
+
+## Front End Documentation
+### Authenticate.js
+In ```login``` function, ```token``` and ```userid``` are set into localStorage.
 
 ## Authors
 Antti Salonen [@bgh304](https://github.com/bgh304)
