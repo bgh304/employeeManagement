@@ -97,9 +97,11 @@ Both components have same way to update and re-render data. They have same kind 
 To switch table row into editing mode, ```updateOnOff``` state needs to be ```true``` and ```updateDepartmentIdFunction``` needs to return ```true```.
 
 **Props**
+
 ```updateDepartmentsProps```/```updateEmployeesProps``` props for the main functions: sent from DepartmentsPage/EmployeesPage component when new data is added to database. Required to be ```true``` to re-render table for latest data.
 
 **States**
+
 ```updateDepartments```/```updateEmployees``` state: required to be ```true``` to re-render table for latest data. The state is changed when data is deleted or updated.
 
 ```updateOnOff``` state: determines if single table row is to be edited. The state is changed when updating data or ```updateDepartmentOnOff```/```updateEmployeeOnOff``` function is used.
@@ -107,6 +109,7 @@ To switch table row into editing mode, ```updateOnOff``` state needs to be ```tr
 ```updateDepartmentId```/```updateEmployeeId``` state: specifies which table row is to be edited.
 
 **Functions**
+
 ```updateDepartmentOnOff```/```updateEmployeeOnOff``` function: changes table's data row into editing mode.
 
 ```updateDepartmentIdFunction```/```updateEmployeeIdFunction``` function: used to specify which table row is to be edited. Returns ```true``` for department/employee to be edited (based on it's ID).
