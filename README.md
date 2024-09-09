@@ -81,7 +81,7 @@ const db = mysql.createConnection({
 ### Authenticate.js
 In ```login``` function, ```token``` and ```userid``` are set into ```localStorage```. They are response data from server side login endpoint. ```token``` data is required to use the actual app, and ```userid``` data determines which user's account is used.
 
-![employeeManagement documentation](https://github.com/user-attachments/assets/573cb72c-0bab-4b67-b9f2-c9a0b97691ce)
+<img src="https://github.com/user-attachments/assets/573cb72c-0bab-4b67-b9f2-c9a0b97691ce" width=50% heigth=50%>
 
 ### Departments.js / Employees.js / DepartmentsPage.js / EmployeesPage.js
 Departments.js and Employees.js are data tables for employees and departments, which are rendered into DepartmentsPage.js and EmployeesPage.js.
