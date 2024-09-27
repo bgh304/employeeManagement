@@ -1,5 +1,7 @@
 # Simple Employee Management System
-Fullstack browser application with basic CRUD-functionalities and user registration/authentication.
+Fullstack browser application with basic CRUD-functionalities and user registration/authentication. Watch the demo video below to quickly see all the functionalities.
+
+https://github.com/user-attachments/assets/edb14908-bb9e-458b-8940-8c265cab4c59
 
 ## Technologies used
 - React
