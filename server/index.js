@@ -174,7 +174,7 @@ app.post('/login', (req, res) => {
             req.session.user = result;
             res.json({auth: true, token: token, result: result, user: username, userid: userid});
           } else{
-            res.json({auth: false, message: 'Wrong username/password'}); // MUUTA TEKSTI
+            res.json({auth: false, message: 'Wrong username/password'});
           }
         })
       } else {

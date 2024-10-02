@@ -6,7 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Axios from 'axios';
 import '../App.css';
 
-import MyImage from '../logo.jpeg'; // TODO: vaihda tuotannossa kuva pois lokaalista
+import MyImage from '../logo.jpeg';
 
 export default function Authenticate() {
   const [usernameReg, setUsernameReg] = useState('');
