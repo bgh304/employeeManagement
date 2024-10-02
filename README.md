@@ -1,5 +1,7 @@
 # Simple Employee Management System
-Fullstack browser application with basic CRUD-functionalities and user registration/authentication.
+Fullstack browser application with basic CRUD-functionalities and user registration/authentication. Watch the demo video below to quickly see all the functionalities.
+
+https://github.com/user-attachments/assets/edb14908-bb9e-458b-8940-8c265cab4c59
 
 ## Technologies used
 - React
@@ -80,6 +82,8 @@ const db = mysql.createConnection({
 ## Frontend Documentation
 ### Authenticate.js
 In ```login``` function, ```token``` and ```userid``` are set into ```localStorage```. They are response data from server side login endpoint. ```token``` data is required to use the actual app, and ```userid``` data determines which user's account is used.
+
+<img src="https://github.com/user-attachments/assets/573cb72c-0bab-4b67-b9f2-c9a0b97691ce" width=65% heigth=65%>
 
 ### Departments.js / Employees.js / DepartmentsPage.js / EmployeesPage.js
 Departments.js and Employees.js are data tables for employees and departments, which are rendered into DepartmentsPage.js and EmployeesPage.js.
